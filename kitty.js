@@ -14,7 +14,7 @@ function randomPlaceToEat() {
 }
 
 // Once per day at 11:00 AM
-setTimeout(randomPlaceToEat, 84277222);
+setInterval(randomPlaceToEat, 84277222);
 
 console.log('Meow. Is it is me you are looking for?');
 
