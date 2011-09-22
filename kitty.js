@@ -13,7 +13,7 @@ function randomPlaceToEat() {
   });
 }
 
-setInterval(randomPlaceToEat, 10000);
+// setInterval(randomPlaceToEat, 10000);
 
 
 
