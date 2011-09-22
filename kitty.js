@@ -13,16 +13,6 @@ function randomPlaceToEat() {
   });
 }
 
-var port = process.env.PORT || 3000;
-app.listen(port, function() {
-  console.log("Listening on " + port);
-  
-  setInterval(function() {
-    console.log("Hello");
-  }, 10000);
-
-});
-
 
 
 console.log('Meow. Is it is me you are looking for?');
