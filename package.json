@@ -1,0 +1,7 @@
+{
+  "name" : "kittybot",
+  "version" : "0.0.1",
+  "dependencies": {
+    "ranger" : "0.2.4"
+  }
+}
