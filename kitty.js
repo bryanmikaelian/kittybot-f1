@@ -13,8 +13,9 @@ function randomPlaceToEat() {
   });
 }
 
-// Once per day at 11:00 AM
-setInterval(randomPlaceToEat, 84277222);
+setInterval(randomPlaceToEat, 10000);
+
+
 
 console.log('Meow. Is it is me you are looking for?');
 
