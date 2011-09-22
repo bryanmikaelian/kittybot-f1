@@ -1,4 +1,4 @@
-var http, ranger, server;
+var http, ranger, server, client;
 http = require('http') 
 ranger = require('ranger');
 server = http.createServer(function(req, res) {
@@ -11,4 +11,13 @@ server = http.createServer(function(req, res) {
 port = process.env.PORT || 3000;
 server.listen(port);
 console.log('Meow. Is it is me you are looking for?');
+
+client = ranger.createClient("fellowshiptech", "52d397ade97cfbfc96d58b50a00996842d785cd7");
+client.room(438825, function(room) {
+  room.join(function() {
+    room.listen(function() {
+      console.log("Kittybot is listening in the room: " + room.name);
+    });
+  });
+});
 
