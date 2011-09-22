@@ -13,10 +13,13 @@ function randomPlaceToEat() {
   });
 }
 
-// setInterval(randomPlaceToEat, 10000);
+
+
+
+setInterval(function() {
+  console.log("Hello");
+}, 10000);
 
 
 
 console.log('Meow. Is it is me you are looking for?');
-
-
