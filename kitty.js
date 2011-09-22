@@ -19,7 +19,7 @@ var server = http.createServer(function(req, res) {
     'Content-Type': 'text/plain'
   });
 
-   return res.end("Meow.");
+   return res.end("Meow.\n");
 });
 
 port = process.env.PORT || 3000;
