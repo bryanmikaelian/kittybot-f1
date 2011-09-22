@@ -1,16 +1,21 @@
 var http = require('http');
+var ranger = require('ranger');
 
 function kittybotrespond() {
-  console.log('Kittybot has sent a response.');
+  var client = ranger.createClient("fellowshiptech", "52d397ade97cfbfc96d58b50a00996842d785cd7");
+  client.room(438825, function(room) {
+    room.speak("hello world\n");
+  });
 }
 
 var server = http.createServer(function(req, res){
   res.write('Hi there.\n');
 
-  setTimeout(kittybotrespond, 3000);
+  kittybotrespond();
 
   res.end();
 }).listen(8100);
 
 
 console.log('Meow. Is it is me you are looking for?');
+
