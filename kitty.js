@@ -1,12 +1,12 @@
-var http, ranger, server, client;
-http = require('http') 
-ranger = require('ranger');
-server = http.createServer(function(req, res) {
-  res.writeHead(200, {
-    'Content-Type': 'text/plain'
-  });
-  return res.end("Meow.\n");
-});
+// var http, ranger, server, client;
+// http = require('http') 
+// ranger = require('ranger');
+// server = http.createServer(function(req, res) {
+//   res.writeHead(200, {
+//     'Content-Type': 'text/plain'
+//   });
+//   return res.end("Meow.\n");
+// });
 
 // port = process.env.PORT || 3000;
 // server.listen(port);
