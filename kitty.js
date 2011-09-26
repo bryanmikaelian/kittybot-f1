@@ -7,7 +7,7 @@ console.log('Meow. Is it is me you are looking for?');
 client.room(439862, function(room) {
   room.listen(function(message)  {
     if (message.type === "SoundMessage") {
-      console.log("Someone played a sound.");
+      console.log("Someone played the sound " + message.body);
     }
   });
 });
