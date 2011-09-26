@@ -28,7 +28,6 @@ client.room(439862, function(room) {
     /* Bot requests */
     if (message.body === "/bot") {
       room.speak("Yes?");
-      room.play("rimshot");
       console.log("Someone made a request to the bot.");
     }
   });
