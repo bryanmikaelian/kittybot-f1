@@ -27,8 +27,9 @@ client.room(439862, function(room) {
     }
 
     /* Bot requests */
-    if (message.body === "!kb") {
-      room.speak("Yes?");
+    /* General request, just saying hi */
+    if (message.body === "!kitty") {
+      room.speak("Hello.  Is it me you are looking for?");
       console.log("Someone made a request to the bot.");
     }
   });
