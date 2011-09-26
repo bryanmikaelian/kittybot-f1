@@ -6,8 +6,10 @@ console.log(process.env.PORT || 3000);
 console.log('Meow. Is it is me you are looking for?');
 client.room(439862, function(room) {
   room.listen(function(message)  {
-    if (message.body === "/bot") {
+    console.log(message);
+    if (message.body === "/bot") {i
       room.speak("Yes?");
+      room.play("rimshot");
       console.log("Someone made a request to the bot.");
     }
   });
