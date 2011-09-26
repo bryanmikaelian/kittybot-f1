@@ -5,6 +5,7 @@ console.log('Meow. Is it is me you are looking for?');
 console.log('Kittybot is alive and ready to serve.  Standing by.');
 
 client.room(439862, function(room) {
+  console.log("Kittybot is joining room " + room.name);
   // room.join();
   // room.speak("Hello.  Is it me you are looking for?");
   room.listen(function(message)  {
@@ -26,7 +27,7 @@ client.room(439862, function(room) {
     }
 
     /* Bot requests */
-    if (message.body === "/bot") {
+    if (message.body === "!kb") {
       room.speak("Yes?");
       console.log("Someone made a request to the bot.");
     }
