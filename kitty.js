@@ -6,8 +6,23 @@ console.log('Meow. Is it is me you are looking for?');
 console.log('Kittybot is alive and ready to serve.  Standing by.');
 
 client.room(439862, function(room) {
-  console.log("Kittybot is joining room " + room.name);
-  // room.join();
+    /* Figure out if we need to join the room */
+  var kittyInRoom = false;
+  room.users(function (users) {
+    for (var i = 0; i < users.length; i++) {
+      if(users[i].name === "Kitty Bot") {
+        console.log("Kittybot is already in the room " + room.name);
+        kittyInRoom = true;
+      }
+    };
+    /* If kitty is not in the room, join it */
+    if (!kittyInRoom) {
+      console.log("Kittybot is joining room " + room.name);
+      room.join();
+      room.speak("Hey guys what is going in hurrr?");
+    }
+  });
+
   // room.speak("Hello.  Is it me you are looking for?");
   room.listen(function(message)  {
     /* Generic logging */
@@ -43,8 +58,14 @@ client.room(439862, function(room) {
       console.log("Someone made a request to the bot.");
     }
 
+    /* Rimshot count */
     if (message.body === "!rcount") {
       room.speak("Total rimshots played today: " + rimshotCount);
+    }
+
+    /* Help */
+    if (message.body === "!help") {
+      room.speak("Meow.  The commands I support are !help, !kitty and !rcount");
     }
   });
 });
