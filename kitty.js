@@ -17,11 +17,13 @@ client.room(439862, function(room) {
     }
 
     /* That's what she said */
-    var lastUserMessage = client.user(message.userId, function(user) {
-      if (user.name === "Matthew Sneeden") {
-        room.speak("That's what she said.");
-      }
-    });
+    if (message.type === "TextMessage") {
+      client.user(message.userId, function(user) {
+        if (user.name === "Matthew Sneeden") {
+          room.speak("That's what she said.");
+        }
+      });
+    }
 
     /* Bot requests */
     if (message.body === "/bot") {
