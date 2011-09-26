@@ -9,6 +9,9 @@ client.room(439862, function(room) {
   // room.join();
   // room.speak("Hello.  Is it me you are looking for?");
   room.listen(function(message)  {
+    /* Generic logging */
+    console.log(message);
+
     /* Welcome */
     if (message.type === "EnterMessage") {
       client.user(message.userId, function(user) {
