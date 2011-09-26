@@ -4,6 +4,8 @@ var client = require('ranger').createClient("fellowshiptech", "52d397ade97cfbfc9
 console.log(process.env.PORT || 3000);
 
 console.log('Meow. Is it is me you are looking for?');
+console.log('Kittybot is alive and ready to server.  Standing by.');
+
 client.room(439862, function(room) {
   room.listen(function(message)  {
     /* Welcome */
