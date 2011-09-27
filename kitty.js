@@ -34,6 +34,24 @@ client.room(439862, function(room) {
       room.speak("Hello.  Is it me you are looking for?");
       console.log("Kittybot responded to the command /kitty");
     }
+
+    // Jenkins queue
+    if (message.body === "/kitty jenkins") {
+      var options = {
+        host: 'hudson.dev.corp.local',
+        port: 8080,
+        path: '/queue/api/json'
+      };
+      http.get(options,function(res){
+        res.on('data', function (chunk) {
+          var data = JSON.parse(chunk);
+          if (data['items'].length === 0) {
+            room.speak("There are currently no jobs in the Jenkins queue.");
+          }
+        });
+      });
+      console.log("Kittybot responded to the command /kitty jenkins);
+    }
   });
 });
 
