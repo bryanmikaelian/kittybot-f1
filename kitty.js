@@ -36,6 +36,19 @@ client.room(439862, function(room) {
       console.log("Kittybot responded to the command /kitty");
     }
 
+    // Hello, user
+    if (message.type === "EnterMessage") {
+      client.user(message.userId, function(user) {
+        if (user.name === "Kitty Bot") {
+          room.speak("Hai guyz.  Wat is goin on in hurrr?");
+        }
+        else {
+          console.log(user.name + " connected.");
+          room.speak("Well, how nice of you to join us " + user.name);
+        }
+      });
+    }
+
     // Jenkins queue
     if (message.body === "/jenkinsq") {
       var options = {
@@ -54,7 +67,16 @@ client.room(439862, function(room) {
           }
         });
       });
-      console.log("Kittybot responded to the command /kitty jenkins");
+      console.log("Kittybot responded to the command /jenkinsq");
+    }
+
+    // That's what she said, Matthew
+    if (message.type === "TextMessage") {
+      client.user(message.userId, function(user) {
+        if (user.name === "Matthew Sneeden") {
+          room.speak("That's what she said.");
+        }
+      });
     }
   });
 });
@@ -66,26 +88,9 @@ client.room(439862, function(room) {
 //     // console.log(message);
 
 //     [> Welcome <]
-//     if (message.type === "EnterMessage") {
-//       client.user(message.userId, function(user) {
-//         if (user.name === "Kitty Bot") {
-//           room.speak("Hai guyz.  Wat is goin on in hurrr?");
-//         }
-//         else {
-//           console.log(user.name + " connected.");
-//         room.speak("Hello " + user.name);
-//         }
-//       });
-//     }
+
 
 //     // That's what she said 
-//     // if (message.type === "TextMessage") {
-//     //   client.user(message.userId, function(user) {
-//         if (user.name === "Matthew Sneeden") {
-//           room.speak("That's what she said.");
-//         }
-//       });
-//     }
 
 //     [> Rimshot counts <]
 //     if (message.type === "SoundMessage" && message.body === "rimshot") {
