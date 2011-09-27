@@ -37,7 +37,7 @@ client.room(439862, function(room) {
     }
 
     // Hello, user
-    if (message.type === "EnterMessage" && message.body != "Hai guyz.  Wat is goin on in hurrr?") {
+    if (message.type === "EnterMessage") {
       client.user(message.userId, function(user) {
         if (user.name === "Kitty Bot") {
           room.speak("Hai guyz.  Wat is goin on in hurrr?");
@@ -104,46 +104,3 @@ client.room(439862, function(room) {
   });
 });
 
-// function monitorRoom(room) {
-//   // room.speak("Hello.  Is it me you are looking for?");
-//   room.listen(function(message)  {
-//     [> Generic logging <]
-//     // console.log(message);
-
-//     [> Welcome <]
-
-
-//     // That's what she said 
-
-//     [> Rimshot counts <]
-//     if (message.type === "SoundMessage" && message.body === "rimshot") {
-//       rimshotCount++;
-//     }
-
-
-//     [> Bot requests <]
-//     [> General request, just saying hi <]
-//     if (message.body === "!kitty") {
-//       room.speak("Hello.  Is it me you are looking for?");
-//       console.log("Someone made a request to the bot.");
-//     }
-
-//     [> Rimshot count <]
-//     if (message.body === "!rcount") {
-//       room.speak("Total rimshots played today: " + rimshotCount);
-//     }
-
-//     [> Help <]
-//     if (message.body === "!help") {
-//       room.speak("Meow.  The commands I support are !help, !kitty and !rcount");
-//     }
-
-//     [> Kill <]
-//     if (message.body === "!kill") {
-//       console.log("Kittybot has been ordered to be terminated.");
-//       room.speak("Meow?  WAIT...NO...SON OF A ...");
-//       // room.play("trombone");
-//       room.leave();
-//     }
-//   });
-// }
