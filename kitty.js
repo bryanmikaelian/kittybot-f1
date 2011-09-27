@@ -8,12 +8,12 @@ console.log('Kittybot is alive and ready to serve.  Standing by.');
 http.createServer(function(req, res) {
   res.writeHead(200, {'Content-Type': 'text/plain'});
   res.end("Meow\n");
-}).listen(Number(process.env.PORT));
+}).listen(Number(process.env.PORT) || 8000);
 
 
 
 client.room(439862, function(room) {
-    /* Figure out if we need to join the room */
+  // Figure out if we need to join the room
   var kittyInRoom = false;
   room.users(function (users) {
     for (var i = 0; i < users.length; i++) {
@@ -21,13 +21,21 @@ client.room(439862, function(room) {
         console.log("Kittybot is already in the room " + room.name);
         kittyInRoom = true;
       }
-    };
-    /* If kitty is not in the room, join it */
+    }
+    // If kitty is not in the room, join it
     if (!kittyInRoom) {
       console.log("Kittybot is joining room " + room.name);
       room.join();
     }
-  });
+   });
+
+   // Listen to the room
+   room.listen(function(message)  {
+     if (message.body === "!kitty") {
+       room.speak("Hello.  Is it me you are looking for?");
+       console.log("Kittybot responded to the command !kitty");
+     }
+   });
 });
 
 // function monitorRoom(room) {
