@@ -5,6 +5,13 @@ var rimshotCount = 0;
 console.log('Meow. Is it is me you are looking for?');
 console.log('Kittybot is alive and ready to serve.  Standing by.');
 
+http.createServer(function(req, res) {
+  res.writeHead(200, {'Content-Type': 'text/plain'});
+  res.end("Meow\n");
+}).listen(Number(process.env.PORT);
+
+
+
 client.room(439862, function(room) {
     /* Figure out if we need to join the room */
   var kittyInRoom = false;
@@ -24,63 +31,63 @@ client.room(439862, function(room) {
   });
 });
 
-function monitorRoom(room) {
-  // room.speak("Hello.  Is it me you are looking for?");
-  room.listen(function(message)  {
-    /* Generic logging */
-    // console.log(message);
+// function monitorRoom(room) {
+//   // room.speak("Hello.  Is it me you are looking for?");
+//   room.listen(function(message)  {
+//     [> Generic logging <]
+//     // console.log(message);
 
-    /* Welcome */
-    if (message.type === "EnterMessage") {
-      client.user(message.userId, function(user) {
-        if (user.name === "Kitty Bot") {
-          room.speak("Hai guyz.  Wat is goin on in hurrr?");
-        }
-        else {
-          console.log(user.name + " connected.");
-        room.speak("Hello " + user.name);
-        }
-      });
-    }
+//     [> Welcome <]
+//     if (message.type === "EnterMessage") {
+//       client.user(message.userId, function(user) {
+//         if (user.name === "Kitty Bot") {
+//           room.speak("Hai guyz.  Wat is goin on in hurrr?");
+//         }
+//         else {
+//           console.log(user.name + " connected.");
+//         room.speak("Hello " + user.name);
+//         }
+//       });
+//     }
 
-    /* That's what she said */
-    if (message.type === "TextMessage") {
-      client.user(message.userId, function(user) {
-        if (user.name === "Matthew Sneeden") {
-          room.speak("That's what she said.");
-        }
-      });
-    }
+//     // That's what she said 
+//     // if (message.type === "TextMessage") {
+//     //   client.user(message.userId, function(user) {
+//         if (user.name === "Matthew Sneeden") {
+//           room.speak("That's what she said.");
+//         }
+//       });
+//     }
 
-    /* Rimshot counts */
-    if (message.type === "SoundMessage" && message.body === "rimshot") {
-      rimshotCount++;
-    }
+//     [> Rimshot counts <]
+//     if (message.type === "SoundMessage" && message.body === "rimshot") {
+//       rimshotCount++;
+//     }
 
 
-    /* Bot requests */
-    /* General request, just saying hi */
-    if (message.body === "!kitty") {
-      room.speak("Hello.  Is it me you are looking for?");
-      console.log("Someone made a request to the bot.");
-    }
+//     [> Bot requests <]
+//     [> General request, just saying hi <]
+//     if (message.body === "!kitty") {
+//       room.speak("Hello.  Is it me you are looking for?");
+//       console.log("Someone made a request to the bot.");
+//     }
 
-    /* Rimshot count */
-    if (message.body === "!rcount") {
-      room.speak("Total rimshots played today: " + rimshotCount);
-    }
+//     [> Rimshot count <]
+//     if (message.body === "!rcount") {
+//       room.speak("Total rimshots played today: " + rimshotCount);
+//     }
 
-    /* Help */
-    if (message.body === "!help") {
-      room.speak("Meow.  The commands I support are !help, !kitty and !rcount");
-    }
+//     [> Help <]
+//     if (message.body === "!help") {
+//       room.speak("Meow.  The commands I support are !help, !kitty and !rcount");
+//     }
 
-    /* Kill */
-    if (message.body === "!kill") {
-      console.log("Kittybot has been ordered to be terminated.");
-      room.speak("Meow?  WAIT...NO...SON OF A ...");
-      // room.play("trombone");
-      room.leave();
-    }
-  });
-}
+//     [> Kill <]
+//     if (message.body === "!kill") {
+//       console.log("Kittybot has been ordered to be terminated.");
+//       room.speak("Meow?  WAIT...NO...SON OF A ...");
+//       // room.play("trombone");
+//       room.leave();
+//     }
+//   });
+// }
