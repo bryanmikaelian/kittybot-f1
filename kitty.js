@@ -50,7 +50,7 @@ client.room(439862, function(room) {
           }
         });
       });
-      console.log("Kittybot responded to the command /kitty jenkins);
+      console.log("Kittybot responded to the command /kitty jenkins");
     }
   });
 });
