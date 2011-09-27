@@ -12,7 +12,7 @@ http.createServer(function(req, res) {
 
 
 
-client.room(439862, function(room) {
+client.room(373588, function(room) {
   // Figure out if we need to join the room
   var kittyInRoom = false;
   room.users(function (users) {
@@ -40,7 +40,7 @@ client.room(439862, function(room) {
     if (message.type === "EnterMessage") {
       client.user(message.userId, function(user) {
         if (user.name === "Kitty Bot") {
-          room.speak("Hai guyz.  Wat is goin on in hurrr?");
+          room.speak("Meow.");
         }
         else {
           console.log(user.name + " connected.");
