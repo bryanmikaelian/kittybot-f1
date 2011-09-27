@@ -28,6 +28,7 @@ client.room(439862, function(room) {
       room.join();
     }
   });
+
   // Listen to the room
   room.listen(function(message)  {
     if (message.body === "/kitty") {
@@ -47,6 +48,9 @@ client.room(439862, function(room) {
           var data = JSON.parse(chunk);
           if (data['items'].length === 0) {
             room.speak("There are currently no jobs in the Jenkins queue.");
+          }
+          else {
+            room.speak("Number of jobs in Jenkins queue:  " + data['items'].length);
           }
         });
       });
