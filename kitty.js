@@ -37,7 +37,7 @@ client.room(439862, function(room) {
     }
 
     // Hello, user
-    if (message.type === "EnterMessage") {
+    if (message.type === "EnterMessage" && message.body != "Hai guyz.  Wat is goin on in hurrr?") {
       client.user(message.userId, function(user) {
         if (user.name === "Kitty Bot") {
           room.speak("Hai guyz.  Wat is goin on in hurrr?");
@@ -69,6 +69,29 @@ client.room(439862, function(room) {
       });
       console.log("Kittybot responded to the command /jenkinsq");
     }
+
+    // Kill kitty
+   if (message.body === "/killkitty") {
+     client.user(message.userId, function(user) {
+        if (user.name === "Bryan Mikaelian") {
+          console.log("Kitty termination has been requested and will be completed.");
+          room.speak("KITTYBOT HAS BEEN MARKED FOR DEATH AND WILL RETURN SHORTLY.  MAKE SENSE?");
+          setTimeout(function(){
+            room.leave();
+            console.log("Kittybot is leaving room " + room.name);
+          }, 5000);
+
+          setTimeout(function(){
+            room.join();
+          }, 10000);
+
+        }
+        else {
+          room.speak("@" + user.name + " Lolz...y u try 2 do dat?");
+        }
+      });
+    };
+ 
 
     // That's what she said, Matthew
     if (message.type === "TextMessage") {
