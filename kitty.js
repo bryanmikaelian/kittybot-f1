@@ -27,15 +27,14 @@ client.room(439862, function(room) {
       console.log("Kittybot is joining room " + room.name);
       room.join();
     }
-   });
-
-   // Listen to the room
-   room.listen(function(message)  {
-     if (message.body === "!kitty") {
-       room.speak("Hello.  Is it me you are looking for?");
-       console.log("Kittybot responded to the command !kitty");
-     }
-   });
+  });
+  // Listen to the room
+  room.listen(function(message)  {
+    if (message.body === "!kitty") {
+      room.speak("Hello.  Is it me you are looking for?");
+      console.log("Kittybot responded to the command !kitty");
+    }
+  });
 });
 
 // function monitorRoom(room) {
