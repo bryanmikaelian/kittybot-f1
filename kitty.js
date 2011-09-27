@@ -26,7 +26,7 @@ client.room(439862, function(room) {
   // room.speak("Hello.  Is it me you are looking for?");
   room.listen(function(message)  {
     /* Generic logging */
-    console.log(message);
+    // console.log(message);
 
     /* Welcome */
     if (message.type === "EnterMessage") {
@@ -67,5 +67,14 @@ client.room(439862, function(room) {
     if (message.body === "!help") {
       room.speak("Meow.  The commands I support are !help, !kitty and !rcount");
     }
+
+    /* Kill */
+    if (message.body === "!kill") {
+      console.log("Kittybot has been ordered to be terminated.");
+      room.speak("Meow?  WAIT...NO...SON OF A ...");
+      // room.play("trombone");
+      room.leave();
+    }
+
   });
 });
