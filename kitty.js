@@ -19,10 +19,12 @@ client.room(439862, function(room) {
     if (!kittyInRoom) {
       console.log("Kittybot is joining room " + room.name);
       room.join();
-      room.speak("Hey guys what is going in hurrr?");
     }
+    monitorRoom(room);
   });
+});
 
+function monitorRoom(room) {
   // room.speak("Hello.  Is it me you are looking for?");
   room.listen(function(message)  {
     /* Generic logging */
@@ -31,8 +33,13 @@ client.room(439862, function(room) {
     /* Welcome */
     if (message.type === "EnterMessage") {
       client.user(message.userId, function(user) {
-        console.log(user.name + " connected.");
+        if (user.name === "Kitty Bot") {
+          room.speak("Hai guyz.  Wat is goin on in hurrr?");
+        }
+        else {
+          console.log(user.name + " connected.");
         room.speak("Hello " + user.name);
+        }
       });
     }
 
@@ -75,6 +82,5 @@ client.room(439862, function(room) {
       // room.play("trombone");
       room.leave();
     }
-
   });
-});
+}
