@@ -8,7 +8,7 @@ console.log('Kittybot is alive and ready to serve.  Standing by.');
 http.createServer(function(req, res) {
   res.writeHead(200, {'Content-Type': 'text/plain'});
   res.end("Meow\n");
-}).listen(Number(process.env.PORT);
+}).listen(Number(process.env.PORT));
 
 
 
@@ -27,7 +27,6 @@ client.room(439862, function(room) {
       console.log("Kittybot is joining room " + room.name);
       room.join();
     }
-    monitorRoom(room);
   });
 });
 
