@@ -37,7 +37,7 @@ client.room(439862, function(room) {
     }
 
     // Jenkins queue
-    if (message.body === "/kitty jenkins") {
+    if (message.body === "/jenkinsq") {
       var options = {
         host: 'hudson.dev.corp.local',
         port: 8080,
