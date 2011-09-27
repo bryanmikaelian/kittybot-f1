@@ -30,9 +30,9 @@ client.room(439862, function(room) {
   });
   // Listen to the room
   room.listen(function(message)  {
-    if (message.body === "!kitty") {
+    if (message.body === "/kitty") {
       room.speak("Hello.  Is it me you are looking for?");
-      console.log("Kittybot responded to the command !kitty");
+      console.log("Kittybot responded to the command /kitty");
     }
   });
 });
