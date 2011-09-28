@@ -15,25 +15,27 @@ http.createServer(function(req, res) {
 
 client.room(439862, function(room) {
   // Figure out if we need to join the room
-  var kittyInRoom = false;
-  room.users(function (users) {
-    for (var i = 0; i < users.length; i++) {
-      if(users[i].name === "Kitty Bot") {
-        console.log("Kittybot is already in the room " + room.name);
-        kittyInRoom = true;
+  setInterval(function(){
+    var kittyInRoom = false;
+    room.users(function (users) {
+      for (var i = 0; i < users.length; i++) {
+        if(users[i].name === "Kitty Bot") {
+          console.log("Kittybot is already in the room " + room.name);
+          kittyInRoom = true;
+        }
       }
-    }
-    // If kitty is not in the room, join it
-    if (!kittyInRoom) {
-      console.log("Kittybot is joining room " + room.name);
-      room.join();
-    }
-  });
+      // If kitty is not in the room, join it
+      if (!kittyInRoom) {
+        console.log("Kittybot is joining room " + room.name);
+        room.join();
+      }
+    });
+  }, 10000);
 
   // Listen to the room
   room.listen(function(message)  {
     if (message.body === "/kitty") {
-      room.speak("Hello.  Is it me you are looking for?");
+      room.speak("Meow.");
       console.log("Kittybot responded to the command /kitty");
     }
 
@@ -111,7 +113,7 @@ client.room(439862, function(room) {
           }
           else {
             for (var i = 0; i < data['issues'].length; i++) {
-              issues.push("Sifter #" + data['issues'][i]['number'] + " ");
+              issues.push("Sifter #" + data['issues'][i]['number']);
             };
             room.speak("Total issues for the Fellowship One project: " + issues.length);
             room.speak("The open issues are: " + issues.join(", "));
@@ -138,7 +140,7 @@ client.room(439862, function(room) {
           }
           else {
             for (var i = 0; i < data['issues'].length; i++) {
-              issues.push("Sifter #" + data['issues'][i]['number'] + " ");
+              issues.push("Sifter #" + data['issues'][i]['number']);
             };
             room.speak("Total change requests open: " + issues.length);
             room.speak("The current open change requests are: " + issues.join(", "));
@@ -146,6 +148,8 @@ client.room(439862, function(room) {
         });
       });
     }
+
+
 
     // That's what she said, Matthew
     if (message.type === "TextMessage") {
