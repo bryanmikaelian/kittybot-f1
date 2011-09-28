@@ -80,6 +80,12 @@ client.room(roomNumber, function(room) {
           room.speak("Don't be stupid!");
         }
 
+        // Make sense?
+        if (message.body.length > 150) {
+          console.log("Make sense?");
+          room.speak("Make sense?");
+        }
+
       });
     }
   }, 8000);
