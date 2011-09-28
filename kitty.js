@@ -1,37 +1,49 @@
 var http = require('http');
 var https = require('https');
 var client = require('ranger').createClient("fellowshiptech", "7bda324c83352c4839ee47e6ff842ed759aaf54b");
-var rimshotCount = 0;
 var roomNumber = 439862;
 
-console.log('Meow. Is it is me you are looking for?');
-console.log('Kittybot is alive and ready to serve.  Standing by.');
+console.log("Starting Kittybot...");
 
 http.createServer(function(req, res) {
+  console.log("An HTTP request has been made.");
   res.writeHead(200, {'Content-Type': 'text/plain'});
   res.end("Meow\n");
 }).listen(Number(process.env.PORT) || 8000);
 
-
-
 client.room(roomNumber, function(room) {
-  // Figure out if we need to join the room
-  setInterval(function(){
-    var kittyInRoom = false;
-    room.users(function (users) {
-      for (var i = 0; i < users.length; i++) {
-        if(users[i].name === "Kitty Bot") {
-          console.log("Kittybot is in the room " + room.name);
-          kittyInRoom = true;
-        }
+
+  // Join the room
+  var kittyInRoom = false;
+  console.log("Attemtping to join the room " + room.name);
+  room.users(function (users) {
+    for (var i = 0; i < users.length; i++) {
+      if(users[i].name === "Kittybot") {
+        kittyInRoom = true;
+        console.log("Already in the room " + room.name);
       }
-      // If kitty is not in the room, join it
-      if (!kittyInRoom) {
-        console.log("Kittybot is joining the room " + room.name);
-        room.join();
+    }
+
+    // If kitty is not in the room, join it
+    if (!kittyInRoom) {
+      console.log("Kittybot has joined the room " + room.name);
+      room.join(); 
+
+      // Unless we are listening to the room already, listen to it.
+      if (!room.isListening) {
+        room.listen(function(){
+          console.log("Listening to the room " + room.name);
+        });
       }
-    });
-  }, 60000);
+      else {
+        console.log("Kittybot is already listening to the room " + room.name);
+      }
+      room.speak("Meow");
+    }
+  });
+});
+
+
 /*
   // Listen to the room
   setInterval(function(){
@@ -55,8 +67,7 @@ client.room(roomNumber, function(room) {
           });
         }
 
-        // Kill kitty
-       if (message.body === "/killkitty") {
+        // Kill kitty       if (message.body === "/killkitty") {
          client.user(message.userId, function(user) {
             if (user.name === "Bryan Mikaelian") {
               console.log("Kitty termination has been requested and will be completed.");
@@ -163,5 +174,4 @@ client.room(roomNumber, function(room) {
     }
   }, 10000);
   */
-});
 
