@@ -99,61 +99,64 @@ client.room(439862, function(room) {
 
         // Sifter
         if (message.body.indexOf("/sifters") !== -1){
-          console.log("Somone made a request against Sifter.");
-        }
-        // Sifters - Fellowship One Project
-        if (message.body === "/sifters f1") {
-            var options = {
-            host: 'fellowshiptech.sifterapp.com',
-            path: '/api/projects/5348/issues?s=1-2',
-            headers: {'X-Sifter-Token': 'b5c0c1aafc3a4db0d6aa55ed51731bd7'}
-          };
+          console.log("Somone made a request for information from Sifter.");
 
-          https.get(options,function(res){
-            res.on('data', function (chunk) {
-              var data = JSON.parse(chunk);
-              var issues = new Array();
-              console.log("A request has been made for all the sifters for the Fellowship One project.");
-              if (data['issues'].length === 0) {
-                room.speak("There are currently no open issues for the Fellowship One project.");
-              }
-              else {
-                for (var i = 0; i < data['issues'].length; i++) {
-                  issues.push("Sifter #" + data['issues'][i]['number']);
-                };
-                room.speak("Total issues for the Fellowship One project: " + issues.length);
-                room.speak("The open issues are: " + issues.join(", "));
-              }
+          // Sifters - Fellowship One Project
+          if (message.body === "/sifters f1") {
+              var options = {
+              host: 'fellowshiptech.sifterapp.com',
+              path: '/api/projects/5348/issues?s=1-2',
+              headers: {'X-Sifter-Token': 'b5c0c1aafc3a4db0d6aa55ed51731bd7'}
+            };
+
+            https.get(options,function(res){
+              res.on('data', function (chunk) {
+                var data = JSON.parse(chunk);
+                var issues = new Array();
+                if (data['issues'].length === 0) {
+                  room.speak("There are currently no open issues for the Fellowship One project.");
+                }
+                else {
+                  for (var i = 0; i < data['issues'].length; i++) {
+                    issues.push("Sifter #" + data['issues'][i]['number']);
+                  };
+                  room.speak("Total issues for the Fellowship One project: " + issues.length);
+                  room.speak("The open issues are: " + issues.join(", "));
+                }
+              });
             });
-          });
-        }
+          }
 
-        // Sifters - Configuration Management
-        if (message.body === "/sifters cm") {
-            var options = {
-            host: 'fellowshiptech.sifterapp.com',
-            path: '/api/projects/3624/issues?s=1-2',
-            headers: {'X-Sifter-Token': 'b5c0c1aafc3a4db0d6aa55ed51731bd7'}
-          };
+          // Sifters - Configuration Management
+          else if (message.body === "/sifters cm") {
+              var options = {
+              host: 'fellowshiptech.sifterapp.com',
+              path: '/api/projects/3624/issues?s=1-2',
+              headers: {'X-Sifter-Token': 'b5c0c1aafc3a4db0d6aa55ed51731bd7'}
+            };
 
-          https.get(options,function(res){
-            res.on('data', function (chunk) {
-              var data = JSON.parse(chunk);
-              var issues = new Array();
-             console.log("A request has been made for all the sifters for the Change Management project.");
-              if (data['issues'].length === 0) {
-                room.speak("There are currently no open change requests.");
-              }
-              else {
-                for (var i = 0; i < data['issues'].length; i++) {
-                  issues.push("Sifter #" + data['issues'][i]['number']);
-                };
-                room.speak("Total change requests open: " + issues.length);
-                room.speak("The current open change requests are: " + issues.join(", "));
-              }
+            https.get(options,function(res){
+              res.on('data', function (chunk) {
+                var data = JSON.parse(chunk);
+                var issues = new Array();
+                if (data['issues'].length === 0) {
+                  room.speak("There are currently no open change requests.");
+                }
+                else {
+                  for (var i = 0; i < data['issues'].length; i++) {
+                    issues.push("Sifter #" + data['issues'][i]['number']);
+                  };
+                  room.speak("Total change requests open: " + issues.length);
+                  room.speak("The current open change requests are: " + issues.join(", "));
+                }
+              });
             });
-          });
+          }
+          else {
+            room.speak("Please specify a project when requesting sifters. Current projects: f1, cm. You can request all open issues for a project by typing /sifters <project name>");
+          }
         }
+
 
         // That's what she said, Matthew
         if (message.type === "TextMessage") {
