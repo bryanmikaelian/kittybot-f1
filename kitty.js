@@ -97,6 +97,10 @@ client.room(439862, function(room) {
           console.log("Kittybot responded to the command /jenkinsq");
         }
 
+        // Sifter
+        if (message.body.indexOf("/sifters") !== -1){
+          console.log("Somone made a request against Sifter.");
+        }
         // Sifters - Fellowship One Project
         if (message.body === "/sifters f1") {
             var options = {
