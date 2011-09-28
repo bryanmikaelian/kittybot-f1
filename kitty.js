@@ -37,8 +37,10 @@ client.room(roomNumber, function(room) {
     if (!room.isListening()) {
       console.log("Listening to the room " + room.name);
       room.listen(function(message){ 
+
         // Log everytime a message happens in the room
         console.log("Kittybot has seen the following message: " + message.body);
+
         // Dismiss
         if (message.body === "/dismisskitty") {
           console.log("Kittybot has been requested to temporarily leave the room " + room.name);
