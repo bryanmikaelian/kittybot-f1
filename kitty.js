@@ -2,6 +2,8 @@ var http = require('http');
 var https = require('https');
 var client = require('ranger').createClient("fellowshiptech", "7bda324c83352c4839ee47e6ff842ed759aaf54b");
 var roomNumber = 439862;
+var joinRooms = true;
+var kittyInRoom = false;
 
 console.log("Starting Kittybot...");
 
@@ -13,24 +15,29 @@ http.createServer(function(req, res) {
 
 client.room(roomNumber, function(room) {
 
-  // Join the room
-  var kittyInRoom = false;
-  console.log("Attemtping to join the room " + room.name);
-  room.users(function (users) {
-    for (var i = 0; i < users.length; i++) {
-      if(users[i].name === "Kittybot") {
-        kittyInRoom = true;
-        console.log("Already in the room " + room.name);
-      }
-    }
+  // Join the room, if we allow it and kittybot is not in the room
+  if (joinRooms && !kittyInRoom) {
+    var joinInterval = setInterval(function(){ 
+      if (!kittyInRoom) {
+        console.log("Attempting to join the room " + room.name);
+        room.users(function (users) {
+          for (var i = 0; i < users.length; i++) {
+            if(users[i].name === "Kittybot") {
+              kittyInRoom = true;
+              console.log("Already in the room " + room.name);
+            }
+          }
 
-    // If kitty is not in the room, join it
-    if (!kittyInRoom) {
-      console.log("Kittybot has joined the room " + room.name);
-      room.join(); 
-      room.speak("Meow");
-    }
-  });
+          // If kitty is not in the room, join it
+          if (!kittyInRoom) {
+            console.log("Kittybot has joined the room " + room.name);
+            room.join(); 
+            room.speak("Meow");
+          }
+        });
+      }
+    }, 5000);
+  }
 
   // Start listening for messages. Check every 5 seconds to see if we are listening.
   var listenInterval = setInterval(function() {
@@ -38,20 +45,30 @@ client.room(roomNumber, function(room) {
       console.log("Listening to the room " + room.name);
       room.listen(function(message){ 
 
-        // Log everytime a message happens in the room
-        console.log("Kittybot has seen the following message: " + message.body);
-
         // Dismiss
         if (message.body === "/dismisskitty") {
           console.log("Kittybot has been requested to temporarily leave the room " + room.name);
           room.leave();
-          room.stopListening();
-          clearInterval(listenInterval);
-          console.log("Kittybot is no longer listening to the room " + room.name);
+          console.log("Kittybot is no longer in the room " + room.name);
+          kittyInRoom = false;
+        }
+
+        // Nuke. WARNING THIS WILL REQUIRE A RESTART
+        if (message.body === "/nukekitty") {
+          room.speak("NUCLEAR LAUNCH DETECTED. Kittybot destruction will now occur.");
+          room.speak("Meow?");
+          console.log("Kittybot has been marked for nuclear detonation in the room " + room.name);
+          setTimeout(function() {
+            room.leave();
+            room.stopListening();
+            clearInterval(listenInterval);
+            clearInterval(joinInterval);
+            console.log("Kittybot is no longer with us.");
+          }, 5000);
         }
       });
     }
-  }, 5000);
+  }, 8000);
 });
 
 
