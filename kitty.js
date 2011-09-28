@@ -2,6 +2,8 @@ var http = require('http');
 var https = require('https');
 var client = require('ranger').createClient("fellowshiptech", "7bda324c83352c4839ee47e6ff842ed759aaf54b");
 var rimshotCount = 0;
+var roomNumber = 439862;
+
 
 console.log('Meow. Is it is me you are looking for?');
 console.log('Kittybot is alive and ready to serve.  Standing by.');
@@ -13,7 +15,7 @@ http.createServer(function(req, res) {
 
 
 
-client.room(439862, function(room) {
+client.room(roomNumber, function(room) {
   // Figure out if we need to join the room
   setInterval(function(){
     var kittyInRoom = false;
