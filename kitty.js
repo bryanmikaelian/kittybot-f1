@@ -112,11 +112,10 @@ client.room(439862, function(room) {
             for (var i = 0; i < data['issues'].length; i++) {
               issues.push(data['issues'][i]['number']);
             };
-            console.log("The current open sifters for the Fellowship One project are: " + issues.toString());
+            room.speak("The current open sifters for the Fellowship One project are: " + issues.toString());
           }
         });
       });
-
     }
 
     // That's what she said, Matthew
