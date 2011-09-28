@@ -48,9 +48,6 @@ client.room(roomNumber, function(room) {
         }
       });
     }
-    else {
-      console.log(".")
-    }
   }, 5000);
 });
 
