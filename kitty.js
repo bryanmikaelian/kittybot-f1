@@ -32,7 +32,7 @@ client.room(roomNumber, function(room) {
           if (!kittyInRoom) {
             console.log("Kittybot has joined the room " + room.name);
             room.join(); 
-            room.speak("Meow");
+            room.speak("Meow.  I am here to serve.  Please type /help if you need assistance. kthxbye.");
           }
         });
       }
@@ -66,6 +66,13 @@ client.room(roomNumber, function(room) {
             console.log("Kittybot is no longer with us.");
           }, 5000);
         }
+
+        // Help
+        if (message.body === "/help") {
+          console.log("Someone requested help.");
+          room.speak("Meow. I support the following commands: /dismisskitty, /meow, /purr, /jingyi");
+        }
+
         // Random cat noises
         if (message.body === "/meow") {
           console.log("Kittybot said meow.");
