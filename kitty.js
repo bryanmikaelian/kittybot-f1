@@ -28,18 +28,13 @@ client.room(roomNumber, function(room) {
     if (!kittyInRoom) {
       console.log("Kittybot has joined the room " + room.name);
       room.join(); 
-
-      // Unless we are listening to the room already, listen to it.
-      if (!room.isListening) {
-        room.listen(function(){
-          console.log("Listening to the room " + room.name);
-        });
-      }
-      else {
-        console.log("Kittybot is already listening to the room " + room.name);
-      }
       room.speak("Meow");
     }
+
+    // Start listening for messages ...
+    room.listen(function(message){
+      console.log("Listening to the room " + room.name);
+    });
   });
 });
 
