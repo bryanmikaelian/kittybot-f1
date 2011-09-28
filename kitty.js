@@ -54,27 +54,6 @@ client.room(439862, function(room) {
           });
         }
 
-        // Jenkins queue
-        if (message.body === "/jenkinsq") {
-          var options = {
-            host: 'hudson.dev.corp.local',
-            port: 8080,
-            path: '/queue/api/json'
-          };
-          http.get(options,function(res){
-            res.on('data', function (chunk) {
-              var data = JSON.parse(chunk);
-              if (data['items'].length === 0) {
-                room.speak("There are currently no jobs in the Jenkins queue.");
-              }
-              else {
-                room.speak("Number of jobs in Jenkins queue:  " + data['items'].length);
-              }
-            });
-          });
-          console.log("Kittybot responded to the command /jenkinsq");
-        }
-
         // Kill kitty
        if (message.body === "/killkitty") {
          client.user(message.userId, function(user) {
@@ -96,6 +75,27 @@ client.room(439862, function(room) {
             }
           });
         };
+
+        // Jenkins
+        if (message.body === "/jenkinsq") {
+          var options = {
+            host: 'hudson.dev.corp.local',
+            port: 8080,
+            path: '/queue/api/json'
+          };
+          http.get(options,function(res){
+            res.on('data', function (chunk) {
+              var data = JSON.parse(chunk);
+              if (data['items'].length === 0) {
+                room.speak("There are currently no jobs in the Jenkins queue.");
+              }
+              else {
+                room.speak("Number of jobs in Jenkins queue:  " + data['items'].length);
+              }
+            });
+          });
+          console.log("Kittybot responded to the command /jenkinsq");
+        }
 
         // Sifters - Fellowship One Project
         if (message.body === "/sifters f1") {
