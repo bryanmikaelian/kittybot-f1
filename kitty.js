@@ -31,7 +31,7 @@ client.room(439862, function(room) {
       }
     });
   }, 60000);
-
+/*
   // Listen to the room
   setInterval(function(){
     if (!room.isListening()) {
@@ -161,5 +161,6 @@ client.room(439862, function(room) {
       });
     }
   }, 10000);
+  */
 });
 
