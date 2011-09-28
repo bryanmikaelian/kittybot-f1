@@ -98,17 +98,14 @@ client.room(439862, function(room) {
         }
 
         // Sifter
-        if (message.body.indexOf("/sifters") !== -1){
-          console.log("Somone made a request for information from Sifter.");
-
-          // Sifters - Fellowship One Project
-          if (message.body === "/sifters f1") {
-              var options = {
+        switch(message.body) {
+          case '/sifters f1':
+            var options = {
               host: 'fellowshiptech.sifterapp.com',
               path: '/api/projects/5348/issues?s=1-2',
               headers: {'X-Sifter-Token': 'b5c0c1aafc3a4db0d6aa55ed51731bd7'}
             };
-
+            console.log("Somone made a request for information from Sifter.");
             https.get(options,function(res){
               res.on('data', function (chunk) {
                 var data = JSON.parse(chunk);
@@ -123,18 +120,17 @@ client.room(439862, function(room) {
                   room.speak("Total issues for the Fellowship One project: " + issues.length);
                   room.speak("The open issues are: " + issues.join(", "));
                 }
+                });
               });
-            });
-          }
+              break;
 
-          // Sifters - Configuration Management
-          else if (message.body === "/sifters cm") {
-              var options = {
+          case '/sifters cm':
+            var options = {
               host: 'fellowshiptech.sifterapp.com',
               path: '/api/projects/3624/issues?s=1-2',
               headers: {'X-Sifter-Token': 'b5c0c1aafc3a4db0d6aa55ed51731bd7'}
             };
-
+            console.log("Somone made a request for information from Sifter.");
             https.get(options,function(res){
               res.on('data', function (chunk) {
                 var data = JSON.parse(chunk);
@@ -151,12 +147,8 @@ client.room(439862, function(room) {
                 }
               });
             });
-          }
-          else {
-            room.speak("Please specify a project when requesting sifters. Current projects: f1, cm. You can request all open issues for a project by typing /sifters <project name>");
-          }
+            break;
         }
-
 
         // That's what she said, Matthew
         if (message.type === "TextMessage") {
