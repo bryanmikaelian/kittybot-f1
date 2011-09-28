@@ -110,9 +110,36 @@ client.room(373588, function(room) {
           }
           else {
             for (var i = 0; i < data['issues'].length; i++) {
-              issues.push(data['issues'][i]['number']);
+              issues.push("Sifter #" + data['issues'][i]['number'] + " ");
             };
-            room.speak("The current open sifters for the Fellowship One project are: " + issues.toString());
+            room.speak("Total issues for the Fellowship One project: " + issues.length);
+            room.speak("The open issues are: " + issues.join(", "));
+          }
+        });
+      });
+    }
+
+    // Sifters - Configuration Management
+    if (message.body === "/sifters cm") {
+        var options = {
+        host: 'fellowshiptech.sifterapp.com',
+        path: '/api/projects/3624/issues?s=1-2',
+        headers: {'X-Sifter-Token': 'b5c0c1aafc3a4db0d6aa55ed51731bd7'}
+      };
+
+      https.get(options,function(res){
+        res.on('data', function (chunk) {
+          var data = JSON.parse(chunk);
+          var issues = new Array();
+          if (data['issues'].length === 0) {
+            room.speak("There are currently no open change requests.");
+          }
+          else {
+            for (var i = 0; i < data['issues'].length; i++) {
+              issues.push("Sifter #" + data['issues'][i]['number'] + " ");
+            };
+            room.speak("Total change requests open: " + issues.length);
+            room.speak("The current open change requests are: " + issues.join(", "));
           }
         });
       });
