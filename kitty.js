@@ -20,7 +20,7 @@ client.room(439862, function(room) {
     room.users(function (users) {
       for (var i = 0; i < users.length; i++) {
         if(users[i].name === "Kitty Bot") {
-          console.log("Kittybot is already in the room " + room.name);
+          console.log("Kittybot is in the room " + room.name);
           kittyInRoom = true;
         }
       }
@@ -30,7 +30,7 @@ client.room(439862, function(room) {
         room.join();
       }
     });
-  }, 10000);
+  }, 60000);
 
   // Listen to the room
   setInterval(function(){
@@ -45,7 +45,7 @@ client.room(439862, function(room) {
         if (message.type === "EnterMessage") {
           client.user(message.userId, function(user) {
             if (user.name === "Kitty Bot") {
-              room.speak("Meow.");
+              room.speak("Meow?");
             }
             else {
               console.log(user.name + " connected.");
