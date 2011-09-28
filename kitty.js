@@ -47,6 +47,7 @@ client.room(roomNumber, function(room) {
           room.leave();
           room.stopListening();
           clearInterval(listenInterval);
+          console.log("Kittybot is no longer listening to the room " + room.name);
         }
       });
     }
