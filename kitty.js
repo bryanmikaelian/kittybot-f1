@@ -105,6 +105,7 @@ client.room(439862, function(room) {
         res.on('data', function (chunk) {
           var data = JSON.parse(chunk);
           var issues = new Array();
+          console.log("A request has been made for all the sifters for the Fellowship One project.");
           if (data['issues'].length === 0) {
             room.speak("There are currently no open issues for the Fellowship One project.");
           }
@@ -131,6 +132,7 @@ client.room(439862, function(room) {
         res.on('data', function (chunk) {
           var data = JSON.parse(chunk);
           var issues = new Array();
+          console.log("A request has been made for all the sifters for the Change Management project.");
           if (data['issues'].length === 0) {
             room.speak("There are currently no open change requests.");
           }
