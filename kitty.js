@@ -1,4 +1,5 @@
 var http = require('http');
+var https = require('https');
 var client = require('ranger').createClient("fellowshiptech", "7bda324c83352c4839ee47e6ff842ed759aaf54b");
 var rimshotCount = 0;
 
@@ -91,7 +92,32 @@ client.room(439862, function(room) {
         }
       });
     };
- 
+
+    // Sifters - Fellowship One Project
+    if (message.body === "/sifters f1") {
+        var options = {
+        host: 'fellowshiptech.sifterapp.com',
+        path: '/api/projects/5348/issues?s=1-2',
+        headers: {'X-Sifter-Token': 'b5c0c1aafc3a4db0d6aa55ed51731bd7'}
+      };
+
+      https.get(options,function(res){
+        res.on('data', function (chunk) {
+          var data = JSON.parse(chunk);
+          var issues = new Array();
+          if (data['issues'].length === 0) {
+            room.speak("There are currently no open issues for the Fellowship One project.");
+          }
+          else {
+            for (var i = 0; i < data['issues'].length; i++) {
+              issues.push(data['issues'][i]['number']);
+            };
+            console.log("The current open sifters for the Fellowship One project are: " + issues.toString());
+          }
+        });
+      });
+
+    }
 
     // That's what she said, Matthew
     if (message.type === "TextMessage") {
