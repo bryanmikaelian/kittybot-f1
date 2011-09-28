@@ -13,7 +13,7 @@ http.createServer(function(req, res) {
 
 
 
-client.room(439862, function(room) {
+client.room(373588, function(room) {
   // Figure out if we need to join the room
   var kittyInRoom = false;
   room.users(function (users) {
