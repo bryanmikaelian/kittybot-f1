@@ -81,11 +81,12 @@ client.room(roomNumber, function(room) {
         }
 
         // Make sense?
-        if (message.body.length > 150) {
-          console.log("Make sense?");
-          room.speak("Make sense?");
+        if (message.body != null) {
+          if (message.body.length > 150) {
+            console.log("Make sense?");
+            room.speak("Make sense?");
+          }
         }
-
       });
     }
   }, 8000);
