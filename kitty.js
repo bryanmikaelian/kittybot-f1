@@ -66,6 +66,20 @@ client.room(roomNumber, function(room) {
             console.log("Kittybot is no longer with us.");
           }, 5000);
         }
+        // Random cat noises
+        if (message.body === "/meow") {
+          console.log("Kittybot said meow.");
+          room.speak("Meow!");
+        }
+        if (message.body === "/purr") {
+          console.log("Kittybot purred.");
+          room.speak("Purrrrrrr");
+        }
+        if (message.body === "/jingyi") {
+          console.log("Kittybot told every to not be stupid.");
+          room.speak("Don't be stupid!");
+        }
+
       });
     }
   }, 8000);
