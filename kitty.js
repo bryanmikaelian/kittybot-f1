@@ -26,7 +26,7 @@ client.room(439862, function(room) {
       }
       // If kitty is not in the room, join it
       if (!kittyInRoom) {
-        console.log("Kittybot is joining room " + room.name);
+        console.log("Kittybot is joining the room " + room.name);
         room.join();
       }
     });
