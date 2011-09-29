@@ -23,12 +23,11 @@ http.createServer(function(req, res) {
 }).listen(Number(process.env.PORT) || 8000);
 
 client.room(roomNumber, function(room) {
-  // Flush session
+  // Flush session when starting for the first time
   redisdb.del("connected_users");
   console.log("Set of connected users has been cleared");
 
   // Add all the current users to a redis hash to establish a "session" for the room 
-
   room.users(function (users) {
     for (var i = 0; i < users.length; i++) {
       redisdb.sadd("connected_users", users[i].name);
@@ -46,20 +45,36 @@ client.room(roomNumber, function(room) {
     });
   });
 
-  // Start listening for messages. Check every 5 seconds to see if we are listening.
+  // Start listening for messages. Check every 2 seconds to see if we are listening.
   var listenInterval = setInterval(function() {
     if (!room.isListening()) {
       console.log("Listening to the room " + room.name);
       room.listen(function(message){ 
         
         // Session stuff
-        console.log(message);
+        if (message.type == "LeaveMessage") {
+          client.user(message.userId, function (user) { 
+            // When a user disconeccts. remove them from the redis set
+            console.log(user.name + " has disconnected.");
+            redisdb.srem("connected_users", user.name);
+          });
+        }
+
+        if (message.type == "EnterMessage") {
+          client.user(message.userId, function (user) { 
+            // When a user connects. add them from the redis set
+            console.log(user.name + " has connected.");
+            redisdb.sadd("connected_users", user.name);
+          });
+        }
 
         // Dismiss
         if (message.body === "/dismisskitty") {
           console.log("Kittybot has been requested to temporarily leave the room " + room.name);
-          room.leave();
-          console.log("Kittybot is no longer in the room " + room.name);
+          room.leave(); 
+          setTimeout(function(){
+            room.join();
+          }, 5000);
         }
 
         // Nuke. WARNING THIS WILL REQUIRE A RESTART
@@ -71,7 +86,6 @@ client.room(roomNumber, function(room) {
             room.leave();
             room.stopListening();
             clearInterval(listenInterval);
-            clearInterval(joinInterval);
             console.log("Kittybot is no longer with us.");
           }, 5000);
         }
@@ -123,6 +137,9 @@ client.room(roomNumber, function(room) {
           redisdb.incr("total_rimshots");
           redisdb.get("total_rimshots", function(err, value) {
             total_rimshots = value;
+            if (total_rimshots === null) {
+              total_rimshots = 0;
+            }
             console.log("Redis has been updated.  The value for total_rimshots is " + total_rimshots);
           })
         }
@@ -183,5 +200,5 @@ client.room(roomNumber, function(room) {
 
       });
     }
-  }, 8000);
+  }, 2000);
 });
