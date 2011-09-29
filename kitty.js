@@ -11,8 +11,6 @@ if (process.env.REDISTOGO_URL) {
 }
 
 var roomNumber = 439862;
-var joinRooms = true;
-var kittyInRoom = false;
 var total_rimshots;
 
 
@@ -25,44 +23,43 @@ http.createServer(function(req, res) {
 }).listen(Number(process.env.PORT) || 8000);
 
 client.room(roomNumber, function(room) {
+  // Flush session
+  redisdb.del("connected_users");
+  console.log("Set of connected users has been cleared");
 
-  // Join the room, if we allow it and kittybot is not in the room
-  if (joinRooms && !kittyInRoom) {
-    var joinInterval = setInterval(function(){ 
-      if (!kittyInRoom) {
-        console.log("Attempting to join the room " + room.name);
-        room.users(function (users) {
-          for (var i = 0; i < users.length; i++) {
-            if(users[i].name === "Kittybot") {
-              kittyInRoom = true;
-              console.log("Already in the room " + room.name);
-            }
-          }
+  // Add all the current users to a redis hash to establish a "session" for the room 
 
-          // If kitty is not in the room, join it
-          if (!kittyInRoom) {
-            console.log("Kittybot has joined the room " + room.name);
-            room.join(); 
-            room.speak("Meow.  I am here to serve.  Please type /help if you need assistance. kthxbye.");
-            kittyInRoom = true;
-          }
-        });
+  room.users(function (users) {
+    for (var i = 0; i < users.length; i++) {
+      redisdb.sadd("connected_users", users[i].name);
+    }
+    redisdb.sismember("connected_users", "Kittybot", function(err, value){
+      if (value === 1) {
+        console.log("Already in the room " + room.name);
       }
-    }, 5000);
-  }
+      else {
+        console.log("Kittybot has joined the room " + room.name);
+        room.join(); 
+        room.speak("Meow.  I am here to serve.  Please type /help if you need assistance. kthxbye.");
+        redisdb.sadd("connected_users", "Kittybot");
+      }
+    });
+  });
 
   // Start listening for messages. Check every 5 seconds to see if we are listening.
   var listenInterval = setInterval(function() {
     if (!room.isListening()) {
       console.log("Listening to the room " + room.name);
       room.listen(function(message){ 
+        
+        // Session stuff
+        console.log(message);
 
         // Dismiss
         if (message.body === "/dismisskitty") {
           console.log("Kittybot has been requested to temporarily leave the room " + room.name);
           room.leave();
           console.log("Kittybot is no longer in the room " + room.name);
-          kittyInRoom = false;
         }
 
         // Nuke. WARNING THIS WILL REQUIRE A RESTART
