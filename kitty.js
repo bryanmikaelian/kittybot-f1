@@ -120,12 +120,13 @@ client.room(roomNumber, function(room) {
             total_rimshots = value;
             console.log("Redis has been updated.  The value for total_rimshots is " + total_rimshots);
           })
-
-          if (message.body === "/rimshots") {
-            console.log("Someone requested the total rimshots");
-            room.speak("Meow. Total rimshots played: " + total_rimshots);
-          }
         }
+
+        if (message.body === "/rimshots") {
+          console.log("Someone requested the total rimshots");
+          room.speak("Meow. Total rimshots played: " + total_rimshots);
+        }
+
       });
     }
   }, 8000);
