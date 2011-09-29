@@ -10,7 +10,7 @@ if (process.env.REDISTOGO_URL) {
   var redis = require('redis'), redisdb = redis.createClient();
 }
 
-var roomNumber = 373588;
+var roomNumber = 439862;
 var total_rimshots;
 
 console.log("Starting Kittybot...");
@@ -87,13 +87,14 @@ client.room(roomNumber, function(room) {
             room.stopListening();
             clearInterval(listenInterval);
             console.log("Kittybot is no longer with us.");
+            redisdb.srem("connected_users", "Kittybot");
           }, 5000);
         }
 
         // Help
         if (message.body === "/help") {
           console.log("Someone requested help.");
-          room.speak("Meow. I support the following commands: /dismisskitty, /meow, /purr, /jingyi, /rimshots, /sifter <number>");
+          room.speak("Meow. I support the following commands: /dismisskitty, /meow, /purr, /jingyi, /rimshots, /sifters, /sifter <number>");
         }
 
         // Random cat noises
@@ -150,21 +151,45 @@ client.room(roomNumber, function(room) {
 
         // Sifter
         if (message.body !== null) {
+          var options = {
+            host: 'fellowshiptech.sifterapp.com',
+            path: '/api/projects/5348/issues?s=1-2',
+            headers: {'X-Sifter-Token': 'b5c0c1aafc3a4db0d6aa55ed51731bd7'}
+          };
+
+          // Match on the /sifters command
+          if (message.body === "/sifters") {
+            console.log("Someone made a request to see all the sifters");
+
+            // Make a request against the Sifter API
+            https.get(options,function(res){
+              res.on('data', function (chunk) {
+                var data = JSON.parse(chunk);
+                var issues = new Array();
+                // If no iissues come back, let everyone know.
+                if (data['issues'].length === 0) {
+                  room.speak("Meow. There are no open sifters.");
+                }
+                else {
+                  for (var i = 0; i < data['issues'].length; i++) {
+                    issues.push(data['issues'][i]['number']);
+                  };
+                }
+                room.speak("The following sifters are open: " + issues.join(", "));
+              });
+            });
+          }
+
           // Match on the /sifter <number> command
           if (message.body.match(/\/sifter\s+(\d+)/)) {
             console.log("Someone made a request for a sifter");
             // Get the number
             var sifterNumber = message.body.replace(/\/sifter\s+(\d+)/i, "$1");
 
-            // Make a request against the Sifter API
-            var options = {
-              host: 'fellowshiptech.sifterapp.com',
-              path: '/api/projects/5348/issues?s=1-2',
-              headers: {'X-Sifter-Token': 'b5c0c1aafc3a4db0d6aa55ed51731bd7'}
-            };
-
+            // Hold the data for the specific sifter
             var sifter = null;
 
+            //Make a request against the Sifter API
             https.get(options,function(res){
               res.on('data', function (chunk) {
                 var data = JSON.parse(chunk);
@@ -194,7 +219,6 @@ client.room(roomNumber, function(room) {
             });
           }
         }
-
       });
     }
   }, 2000);
