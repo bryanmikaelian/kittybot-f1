@@ -1,6 +1,7 @@
 var http = require('http');
 var https = require('https');
 var client = require('ranger').createClient("fellowshiptech", "7bda324c83352c4839ee47e6ff842ed759aaf54b");
+var redis = require('redis');
 var roomNumber = 439862;
 var joinRooms = true;
 var kittyInRoom = false;
@@ -111,15 +112,6 @@ client.room(roomNumber, function(room) {
     }
   }, 8000);
 });
-
-
-// var redis = require('redis-url').connect(process.env.REDISTOGO_URL);
-
-// redis.set('foo', 'bar');
-
-// redis.get('foo', function(err, value) {
-//   console.log('foo is: ' + value);
-// });
 
 /*
   // Listen to the room
