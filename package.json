@@ -3,5 +3,6 @@
   "version" : "0.0.1",
   "dependencies": {
     "ranger" : "0.2.4"
+    "redis-url": "0.0.1"
   }
 }
