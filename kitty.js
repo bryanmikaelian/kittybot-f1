@@ -65,6 +65,7 @@ client.room(roomNumber, function(room) {
             // When a user connects. add them from the redis set
             console.log(user.name + " has connected.");
             redisdb.sadd("connected_users", user.name);
+            room.speak("Meow. Hello " + user.name + ". Is it me you are looking for?");
           });
         }
 
@@ -127,17 +128,7 @@ client.room(roomNumber, function(room) {
             room.speak("Make sense?");
           }
         }
-
-        // Hello user
-        if (message.type === "EnterMessage") {
-          client.user(message.userId, function(user) {
-            if (user.name !== "Kittybot") {
-              console.log(user.name + " connected.");
-              room.speak("Meow. Hello " + user.name + ". Is it me you are looking for?");
-            }
-          });
-        }
-
+        
         // Rimshot counter
         if (message.type === "SoundMessage" && message.body == "rimshot") {
           console.log("Someone played a rimshot");
