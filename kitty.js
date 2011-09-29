@@ -4,7 +4,7 @@ var client = require('ranger').createClient("fellowshiptech", "7bda324c83352c483
 
 if (process.env.REDISTOGO_URL) {
   var rtg   = require("url").parse(process.env.REDISTOGO_URL);
-  var redis = require("redis").createClient(rtg.port, rtg.hostname);
+  var redis = require("redis"), redisdb = redis.createClient(rtg.port, rtg.hostname);
   redis.auth(rtg.auth.split(":")[1]);
 } else {
   var redis = require('redis'), redisdb = redis.createClient();
@@ -14,9 +14,6 @@ var roomNumber = 373588;
 var total_rimshots;
 
 console.log("Starting Kittybot...");
-
-// Add the initial user to establish session
-redisdb.sadd("connected_users", "Initial User");
 
 http.createServer(function(req, res) {
   console.log("An HTTP request has been made.");
