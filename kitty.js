@@ -23,7 +23,7 @@ http.createServer(function(req, res) {
 
 client.room(roomNumber, function(room) {
   // Flush session when starting for the first time
-  if(redisdb.exists("connected_users"){
+  if(redisdb.exists("connected_users")){
     redisdb.del("connected_users");
     console.log("Set of connected users has been cleared");
   }
