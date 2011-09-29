@@ -132,12 +132,9 @@ client.room(roomNumber, function(room) {
 
         if (message.body === "/rimshots") {
           console.log("Someone requested the total rimshots");
-          if (total_rimshots === undefined ) {
-            room.speak("No rimshots have been played. Get on it Matthew.");
-          }
-          else {
-            room.speak("Meow. Total rimshots played: " + total_rimshots);
-          }
+          redisdb.get("total_rimshots", function(err, value) {
+            room.speak("Meow. Total rimshots played: " + value);
+          });
         }
 
         // Sifter
