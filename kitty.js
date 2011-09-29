@@ -299,4 +299,4 @@ client.room(roomNumber, function(room) {
 // Free Heroku is lame. 
 setInterval(function() {
   console.log("Kittybot is here.");
-}, 6000);
+}, 60000);
