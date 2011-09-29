@@ -5,6 +5,8 @@ var redis = require('redis'), redisdb = redis.createClient(process.env.REDISTOGO
 var roomNumber = 439862;
 var joinRooms = true;
 var kittyInRoom = false;
+var total_rimshots;
+
 
 console.log("Starting Kittybot...");
 
@@ -107,6 +109,22 @@ client.room(roomNumber, function(room) {
               room.speak("Meow. Hello " + user.name + ". Is it me you are looking for?");
             }
           });
+        }
+
+        // Rimshot counter
+        if (message.type === "SoundMessage" && message.body == "rimshot") {
+          console.log("Someone played a rimshot");
+          // Update redis
+          redisdb.incr("total_rimshots");
+          redisdb.get("total_rimshots", function(err, value) {
+            total_rimshots = value;
+            console.log("Redis has been updated.  The value for total_rimshots is " + total_rimshots);
+          })
+
+          if (message.body === "/rimshots") {
+            console.log("Someone requested the total rimshots");
+            room.speak("Meow. Total rimshots played: " + total_rimshots);
+          }
         }
       });
     }
