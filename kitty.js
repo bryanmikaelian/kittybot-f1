@@ -79,16 +79,23 @@ client.room(roomNumber, function(room) {
 
         // Nuke. WARNING THIS WILL REQUIRE A RESTART
         if (message.body === "/nukekitty") {
-          room.speak("NUCLEAR LAUNCH DETECTED. Kittybot destruction will now occur.");
-          room.speak("Meow?");
-          console.log("Kittybot has been marked for nuclear detonation in the room " + room.name);
-          setTimeout(function() {
-            room.leave();
-            room.stopListening();
-            clearInterval(listenInterval);
-            console.log("Kittybot is no longer with us.");
-            redisdb.srem("connected_users", "Kittybot");
-          }, 5000);
+          client.user(message.userId, function(user) {
+            if (user.name === "Bryan Mikaelian") {
+              room.speak("NUCLEAR LAUNCH DETECTED. Kittybot destruction will now occur.");
+              room.speak("Meow?");
+              console.log("Kittybot has been marked for nuclear detonation in the room " + room.name);
+              setTimeout(function() {
+                room.leave();
+                room.stopListening();
+                clearInterval(listenInterval);
+                console.log("Kittybot is no longer with us.");
+                redisdb.srem("connected_users", "Kittybot");
+              }, 5000);
+            }
+            else {
+              room.speak("Not enough minerals.");
+            }
+          });
         }
 
         // Help
