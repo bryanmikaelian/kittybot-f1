@@ -94,6 +94,16 @@ client.room(roomNumber, function(room) {
             room.speak("Make sense?");
           }
         }
+
+        // Hello user
+        if (message.type === "EnterMessage") {
+          client.user(message.userId, function(user) {
+            if (user.name !== "Kittybot") {
+              console.log(user.name + " connected.");
+              room.speak("Meow. Hello " + user.name + ". Is it me you are looking for?");
+            }
+          });
+        }
       });
     }
   }, 8000);
