@@ -5,7 +5,7 @@ var client = require('ranger').createClient("fellowshiptech", "7bda324c83352c483
 if (process.env.REDISTOGO_URL) {
   var rtg   = require("url").parse(process.env.REDISTOGO_URL);
   var redis = require("redis"), redisdb = redis.createClient(rtg.port, rtg.hostname);
-  redis.auth(rtg.auth.split(":")[1]);
+  redisdb.auth(rtg.auth.split(":")[1]);
 } else {
   var redis = require('redis'), redisdb = redis.createClient();
 }
