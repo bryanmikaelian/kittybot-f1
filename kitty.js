@@ -132,7 +132,12 @@ client.room(roomNumber, function(room) {
 
         if (message.body === "/rimshots") {
           console.log("Someone requested the total rimshots");
-          room.speak("Meow. Total rimshots played: " + total_rimshots);
+          if (total_rimshots === null ) {
+            room.speak("No rimshots have been played. Get on it Matthew.");
+          }
+          else {
+            room.speak("Meow. Total rimshots played: " + total_rimshots);
+          }
         }
 
       });
