@@ -13,7 +13,6 @@ if (process.env.REDISTOGO_URL) {
 var roomNumber = 373588;
 var total_rimshots;
 
-
 console.log("Starting Kittybot...");
 
 http.createServer(function(req, res) {
@@ -24,8 +23,10 @@ http.createServer(function(req, res) {
 
 client.room(roomNumber, function(room) {
   // Flush session when starting for the first time
-  redisdb.del("connected_users");
-  console.log("Set of connected users has been cleared");
+  if(redisdb.exists("connected_users"){
+    redisdb.del("connected_users");
+    console.log("Set of connected users has been cleared");
+  }
 
   // Add all the current users to a redis hash to establish a "session" for the room 
   room.users(function (users) {
