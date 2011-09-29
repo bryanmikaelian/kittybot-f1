@@ -79,22 +79,29 @@ client.room(roomNumber, function(room) {
 
         // Nuke. WARNING THIS WILL REQUIRE A RESTART
         if (message.body === "/nukekitty") {
-          room.speak("NUCLEAR LAUNCH DETECTED. Kittybot destruction will now occur.");
-          room.speak("Meow?");
-          console.log("Kittybot has been marked for nuclear detonation in the room " + room.name);
-          setTimeout(function() {
-            room.leave();
-            room.stopListening();
-            clearInterval(listenInterval);
-            console.log("Kittybot is no longer with us.");
-            redisdb.srem("connected_users", "Kittybot");
-          }, 5000);
+          client.user(message.userId, function(user) {
+            if (user.name === "Bryan Mikaelian") {
+              room.speak("NUCLEAR LAUNCH DETECTED. Kittybot destruction will now occur.");
+              room.speak("Meow?");
+              console.log("Kittybot has been marked for nuclear detonation in the room " + room.name);
+              setTimeout(function() {
+                room.leave();
+                room.stopListening();
+                clearInterval(listenInterval);
+                console.log("Kittybot is no longer with us.");
+                redisdb.srem("connected_users", "Kittybot");
+              }, 5000);
+            }
+            else {
+              room.speak("Not enough minerals.");
+            }
+          });
         }
 
         // Help
         if (message.body === "/help") {
           console.log("Someone requested help.");
-          room.speak("Meow. I support the following commands: /dismisskitty, /meow, /purr, /jingyi, /rimshots, /sifters, /sifter <number>");
+          room.speak("Meow. I support the following commands: /dismisskitty, /meow, /purr, /jingyi, /rimshots, /sifters, /sifter <number>, /crs, /cr <number>");
         }
 
         // Random cat noises
@@ -115,7 +122,7 @@ client.room(roomNumber, function(room) {
 
         // Make sense?
         if (message.body != null) {
-          if (message.body.length > 150) {
+          if (message.body.length > 165) {
             console.log("Make sense?");
             room.speak("Make sense?");
           }
@@ -175,7 +182,7 @@ client.room(roomNumber, function(room) {
                     issues.push(data['issues'][i]['number']);
                   };
                 }
-                room.speak("The following sifters are open: " + issues.join(", "));
+                room.speak("The following sifters are open: " + issues.join(", ") + ". Type /sifter <number> to see more info.");
               });
             });
           }
@@ -218,7 +225,80 @@ client.room(roomNumber, function(room) {
               });
             });
           }
-        }
+        } // Sifters Block
+
+        // Change request
+        if (message.body !== null) {
+          var options = {
+            host: 'fellowshiptech.sifterapp.com',
+            path: '/api/projects/3624/issues?s=1-2',
+            headers: {'X-Sifter-Token': 'b5c0c1aafc3a4db0d6aa55ed51731bd7'}
+          };
+
+          // Match on the /crs command
+          if (message.body === "/crs") {
+            console.log("Someone made a request to see all the change requests");
+
+            // Make a request against the Sifter API
+            https.get(options,function(res){
+              res.on('data', function (chunk) {
+                var data = JSON.parse(chunk);
+                var changerequests = new Array();
+                // If no iissues come back, let everyone know.
+                if (data['issues'].length === 0) {
+                  room.speak("Meow. There are no open change requests.");
+                }
+                else {
+                  for (var i = 0; i < data['issues'].length; i++) {
+                    changerequests.push(data['issues'][i]['number']);
+                  };
+                }
+                room.speak("The following change requests are open: " + changerequests.join(", ") + ". Type /cr <number> to see more info.");
+              });
+            });
+          }
+
+          // Match on the /cr <number> command
+          if (message.body.match(/\/cr\s+(\d+)/)) {
+            console.log("Someone made a request for a change request");
+            // Get the number
+            var sifterNumber = message.body.replace(/\/cr\s+(\d+)/i, "$1");
+
+            // Hold the data for the specific sifter
+            var sifter = null;
+
+            //Make a request against the Sifter API
+            https.get(options,function(res){
+              res.on('data', function (chunk) {
+                var data = JSON.parse(chunk);
+                var issues = new Array();
+                // If no iissues come back, let everyone know.
+                if (data['issues'].length === 0) {
+                  room.speak("Meow. There are no open change requests.");
+                }
+                else {
+                  // Look at each issue.  If its number is the one requested, store it in the sifter variable.
+                  for (var i = 0; i < data['issues'].length; i++) {
+                    if (data['issues'][i]['number'].toString() === sifterNumber) {
+                      sifter = data['issues'][i];
+                    }
+                  };
+
+                  // If we found a sifter, let everyone know what that number is. Otherwise mention that it could not be found
+                  if (sifter !== null) {
+                    room.speak("Change Request #" + sifter['number'] + ": " + sifter['subject']);
+                    room.speak("Assigned to: " + sifter['assignee_name']);
+                    room.speak("State: " + sifter['category_name']);
+                  }
+                  else {
+                    room.speak("Meow. I could not find that change request.");
+                  }
+                }
+              });
+            });
+          }
+        } // Change request block
+
       });
     }
   }, 2000);
