@@ -82,6 +82,8 @@ client.room(roomNumber, function(room) {
           console.log("Kittybot purred.");
           room.speak("Purrrrrrr");
         }
+        
+        // Jingyi? 
         if (message.body === "/jingyi") {
           console.log("Kittybot told every to not be stupid.");
           room.speak("Don't be stupid!");
