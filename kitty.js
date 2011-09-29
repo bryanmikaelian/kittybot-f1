@@ -7,7 +7,7 @@ if (process.env.REDISTOGO_URL) {
   var redis = require("redis").createClient(rtg.port, rtg.hostname);
   redis.auth(rtg.auth.split(":")[1]);
 } else {
-  var redis = require('redis'), redisdb = redis.createClient(process.env.REDISTOGO_URL);
+  var redis = require('redis'), redisdb = redis.createClient();
 }
 
 var roomNumber = 439862;
@@ -82,7 +82,7 @@ client.room(roomNumber, function(room) {
         // Help
         if (message.body === "/help") {
           console.log("Someone requested help.");
-          room.speak("Meow. I support the following commands: /dismisskitty, /meow, /purr, /jingyi, /rimshots");
+          room.speak("Meow. I support the following commands: /dismisskitty, /meow, /purr, /jingyi, /rimshots, /sifter <number>");
         }
 
         // Random cat noises
@@ -137,6 +137,53 @@ client.room(roomNumber, function(room) {
           }
           else {
             room.speak("Meow. Total rimshots played: " + total_rimshots);
+          }
+        }
+
+        // Sifter
+        if (message.body !== null) {
+          // Match on the /sifter <number> command
+          if (message.body.match(/\/sifter\s+(\d+)/)) {
+            console.log("Someone made a request for a sifter");
+            // Get the number
+            var sifterNumber = message.body.replace(/\/sifter\s+(\d+)/i, "$1");
+
+            // Make a request against the Sifter API
+            var options = {
+              host: 'fellowshiptech.sifterapp.com',
+              path: '/api/projects/5348/issues?s=1-2',
+              headers: {'X-Sifter-Token': 'b5c0c1aafc3a4db0d6aa55ed51731bd7'}
+            };
+
+            var sifter = null;
+
+            https.get(options,function(res){
+              res.on('data', function (chunk) {
+                var data = JSON.parse(chunk);
+                var issues = new Array();
+                // If no iissues come back, let everyone know.
+                if (data['issues'].length === 0) {
+                  room.speak("Meow. There are no open sifters.");
+                }
+                else {
+                  // Look at each issue.  If its number is the one requested, store it in the sifter variable.
+                  for (var i = 0; i < data['issues'].length; i++) {
+                    if (data['issues'][i]['number'].toString() === sifterNumber) {
+                      sifter = data['issues'][i];
+                    }
+                  };
+
+                  // If we found a sifter, let everyone know what that number is. Otherwise mention that it could not be found
+                  if (sifter !== null) {
+                    room.speak("Sifter #" + sifter['number'] + ": " + sifter['subject']);
+                    room.speak("Current status: " + sifter['status']);
+                  }
+                  else {
+                    room.speak("Meow. I could not find that sifter.");
+                  }
+                }
+              });
+            });
           }
         }
 
@@ -214,27 +261,7 @@ client.room(roomNumber, function(room) {
         switch(message.body) {
           case '/sifters f1':
             var options = {
-              host: 'fellowshiptech.sifterapp.com',
-              path: '/api/projects/5348/issues?s=1-2',
-              headers: {'X-Sifter-Token': 'b5c0c1aafc3a4db0d6aa55ed51731bd7'}
-            };
-            console.log("Somone made a request for information from Sifter.");
-            https.get(options,function(res){
-              res.on('data', function (chunk) {
-                var data = JSON.parse(chunk);
-                var issues = new Array();
-                if (data['issues'].length === 0) {
-                  room.speak("There are currently no open issues for the Fellowship One project.");
-                }
-                else {
-                  for (var i = 0; i < data['issues'].length; i++) {
-                    issues.push("Sifter #" + data['issues'][i]['number']);
-                  };
-                  room.speak("Total issues for the Fellowship One project: " + issues.length);
-                  room.speak("The open issues are: " + issues.join(", "));
-                }
-                });
-              });
+
               break;
 
           case '/sifters cm':
