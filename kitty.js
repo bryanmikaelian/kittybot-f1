@@ -82,7 +82,7 @@ client.room(roomNumber, function(room) {
         // Help
         if (message.body === "/help") {
           console.log("Someone requested help.");
-          room.speak("Meow. I support the following commands: /dismisskitty, /meow, /purr, /jingyi");
+          room.speak("Meow. I support the following commands: /dismisskitty, /meow, /purr, /jingyi, /rimshots");
         }
 
         // Random cat noises
