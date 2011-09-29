@@ -33,6 +33,7 @@ client.room(roomNumber, function(room) {
             console.log("Kittybot has joined the room " + room.name);
             room.join(); 
             room.speak("Meow.  I am here to serve.  Please type /help if you need assistance. kthxbye.");
+            kittyInRoom = true;
           }
         });
       }
@@ -111,6 +112,14 @@ client.room(roomNumber, function(room) {
   }, 8000);
 });
 
+
+// var redis = require('redis-url').connect(process.env.REDISTOGO_URL);
+
+// redis.set('foo', 'bar');
+
+// redis.get('foo', function(err, value) {
+//   console.log('foo is: ' + value);
+// });
 
 /*
   // Listen to the room
