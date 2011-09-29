@@ -15,6 +15,9 @@ var total_rimshots;
 
 console.log("Starting Kittybot...");
 
+// Add the initial user to establish session
+redisdb.sadd("connected_users", "Initial User");
+
 http.createServer(function(req, res) {
   console.log("An HTTP request has been made.");
   res.writeHead(200, {'Content-Type': 'text/plain'});
@@ -23,10 +26,9 @@ http.createServer(function(req, res) {
 
 client.room(roomNumber, function(room) {
   // Flush session when starting for the first time
-  if(redisdb.exists("connected_users")){
-    redisdb.del("connected_users");
-    console.log("Set of connected users has been cleared");
-  }
+  redisdb.del("connected_users");
+  console.log("Set of connected users has been cleared");
+
 
   // Add all the current users to a redis hash to establish a "session" for the room 
   room.users(function (users) {
