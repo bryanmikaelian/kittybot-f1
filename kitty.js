@@ -137,9 +137,6 @@ client.room(roomNumber, function(room) {
           redisdb.incr("total_rimshots");
           redisdb.get("total_rimshots", function(err, value) {
             total_rimshots = value;
-            if (total_rimshots === null) {
-              total_rimshots = 0;
-            }
             console.log("Redis has been updated.  The value for total_rimshots is " + total_rimshots);
           })
         }
