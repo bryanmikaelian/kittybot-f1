@@ -121,11 +121,11 @@ client.room(roomNumber, function(room) {
           room.speak("Don't be stupid!");
         }
 
-		// catnip
-		if(message.body === "/catnip"){
-			console.log("Kittybot will take the next post and make it 1337 speak");
-			room.speak("Can haz kittybot?  Yes, can haz. meowz.")
-		}
+        // catnip
+        if(message.body === "/catnip"){
+          console.log("Kittybot will take the next post and make it 1337 speak");
+          room.speak("Can haz kittybot?  Yes, can haz. meowz.")
+        }
 
         // Make sense?
         if (message.body != null) {
@@ -300,9 +300,3 @@ client.room(roomNumber, function(room) {
     }
   }, 2000);
 });
-
-
-// Free Heroku is lame. 
-setInterval(function() {
-  console.log("Kittybot is here.");
-}, 60000);
