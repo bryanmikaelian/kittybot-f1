@@ -50,7 +50,7 @@ client.room(roomNumber, function(room) {
     if (!room.isListening()) {
       console.log("Listening to the room " + room.name);
       room.listen(function(message){ 
-        
+
         // Session stuff
         if (message.type == "LeaveMessage") {
           client.user(message.userId, function (user) { 
@@ -66,6 +66,7 @@ client.room(roomNumber, function(room) {
             console.log(user.name + " has connected.");
             redisdb.sadd("connected_users", user.name);
             room.speak("Meow. Hello " + user.name + ". Is it me you are looking for?");
+            this.represent("bob");
           });
         }
 
