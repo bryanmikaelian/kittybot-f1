@@ -300,9 +300,3 @@ client.room(roomNumber, function(room) {
     }
   }, 2000);
 });
-
-
-// Free Heroku is lame. 
-setInterval(function() {
-  console.log("Kittybot is here.");
-}, 60000);
