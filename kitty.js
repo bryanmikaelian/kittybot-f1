@@ -1,7 +1,7 @@
 var http = require('http');
 var https = require('https');
 var client = require('ranger').createClient("fellowshiptech", "7bda324c83352c4839ee47e6ff842ed759aaf54b");
-var sifter = require('./lib/sifter');
+var sifterC = require('./lib/sifter');
 
 if (process.env.REDISTOGO_URL) {
   var rtg   = require("url").parse(process.env.REDISTOGO_URL);
@@ -157,6 +157,8 @@ client.room(roomNumber, function(room) {
 
         // Sifter
         if (message.body !== null) {
+          sifterC.getSifter(true);
+          sifterC.getSifter(false);
           var options = {
             host: 'fellowshiptech.sifterapp.com',
             path: '/api/projects/5348/issues?s=1-2',
