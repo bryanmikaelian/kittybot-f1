@@ -1,7 +1,7 @@
 var http = require('http');
 var https = require('https');
 var client = require('ranger').createClient("fellowshiptech", "7bda324c83352c4839ee47e6ff842ed759aaf54b");
-var sifterC = require('./lib/sifter');
+var sifterC = require('./sifter');
 
 if (process.env.REDISTOGO_URL) {
   var rtg   = require("url").parse(process.env.REDISTOGO_URL);
@@ -22,7 +22,7 @@ http.createServer(function(req, res) {
   res.end("Meow\n");
 }).listen(Number(process.env.PORT) || 8000);
 
-client.room(roomNumber, function(room) {
+var room = client.room(roomNumber, function(room) {
   // Flush session when starting for the first time
   redisdb.del("connected_users");
   console.log("Set of connected users has been cleared");
@@ -157,8 +157,8 @@ client.room(roomNumber, function(room) {
 
         // Sifter
         if (message.body !== null) {
-          sifterC.getSifter(true);
-          sifterC.getSifter(false);
+          sifterC.room(room);
+
           var options = {
             host: 'fellowshiptech.sifterapp.com',
             path: '/api/projects/5348/issues?s=1-2',
