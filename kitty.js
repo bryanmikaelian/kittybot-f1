@@ -1,7 +1,7 @@
 var http = require('http');
 var https = require('https');
 var client = require('ranger').createClient("fellowshiptech", "7bda324c83352c4839ee47e6ff842ed759aaf54b");
-var sifterC = require('./sifter');
+var sifter = require('./sifter');
 
 if (process.env.REDISTOGO_URL) {
   var rtg   = require("url").parse(process.env.REDISTOGO_URL);
@@ -12,7 +12,6 @@ if (process.env.REDISTOGO_URL) {
 }
 
 var roomNumber = 439862;
-var total_rimshots;
 
 console.log("Starting Kittybot...");
 
@@ -143,8 +142,7 @@ var room = client.room(roomNumber, function(room) {
           // Update redis
           redisdb.incr("total_rimshots");
           redisdb.get("total_rimshots", function(err, value) {
-            total_rimshots = value;
-            console.log("Redis has been updated.  The value for total_rimshots is " + total_rimshots);
+            console.log("Redis has been updated.  The value for total_rimshots is " + value);
           })
         }
 
@@ -156,77 +154,18 @@ var room = client.room(roomNumber, function(room) {
         }
 
         // Sifter
-        if (message.body !== null) {
-          sifterC.room(room);
-
-          var options = {
-            host: 'fellowshiptech.sifterapp.com',
-            path: '/api/projects/5348/issues?s=1-2',
-            headers: {'X-Sifter-Token': 'b5c0c1aafc3a4db0d6aa55ed51731bd7'}
-          };
+        if (message.body !== null) { 
 
           // Match on the /sifters command
           if (message.body === "/sifters") {
-            console.log("Someone made a request to see all the sifters");
-
-            // Make a request against the Sifter API
-            https.get(options,function(res){
-              res.on('data', function (chunk) {
-                var data = JSON.parse(chunk);
-                var issues = new Array();
-                // If no iissues come back, let everyone know.
-                if (data['issues'].length === 0) {
-                  room.speak("Meow. There are no open sifters.");
-                }
-                else {
-                  for (var i = 0; i < data['issues'].length; i++) {
-                    issues.push(data['issues'][i]['number']);
-                  };
-                }
-                room.speak("The following sifters are open: " + issues.join(", ") + ". Type /sifter <number> to see more info.");
-              });
-            });
+            sifter.processCommand(room, "/sifters");
           }
 
           // Match on the /sifter <number> command
           if (message.body.match(/\/sifter\s+(\d+)/)) {
-            console.log("Someone made a request for a sifter");
-            // Get the number
-            var sifterNumber = message.body.replace(/\/sifter\s+(\d+)/i, "$1");
-
-            // Hold the data for the specific sifter
-            var sifter = null;
-
-            //Make a request against the Sifter API
-            https.get(options,function(res){
-              res.on('data', function (chunk) {
-                var data = JSON.parse(chunk);
-                var issues = new Array();
-                // If no iissues come back, let everyone know.
-                if (data['issues'].length === 0) {
-                  room.speak("Meow. There are no open sifters.");
-                }
-                else {
-                  // Look at each issue.  If its number is the one requested, store it in the sifter variable.
-                  for (var i = 0; i < data['issues'].length; i++) {
-                    if (data['issues'][i]['number'].toString() === sifterNumber) {
-                      sifter = data['issues'][i];
-                    }
-                  };
-
-                  // If we found a sifter, let everyone know what that number is. Otherwise mention that it could not be found
-                  if (sifter !== null) {
-                    room.speak("Sifter #" + sifter['number'] + ": " + sifter['subject']);
-                    room.speak("Current status: " + sifter['status']);
-                  }
-                  else {
-                    room.speak("Meow. I could not find that sifter.");
-                  }
-                }
-              });
-            });
+            sifter.processCommand(room, message.body);
           }
-        } // Sifters Block
+        } 
 
         // Change request
         if (message.body !== null) {
@@ -266,7 +205,7 @@ var room = client.room(roomNumber, function(room) {
             var sifterNumber = message.body.replace(/\/cr\s+(\d+)/i, "$1");
 
             // Hold the data for the specific sifter
-            var sifter = null;
+            var sifters = null;
 
             //Make a request against the Sifter API
             https.get(options,function(res){
@@ -281,15 +220,15 @@ var room = client.room(roomNumber, function(room) {
                   // Look at each issue.  If its number is the one requested, store it in the sifter variable.
                   for (var i = 0; i < data['issues'].length; i++) {
                     if (data['issues'][i]['number'].toString() === sifterNumber) {
-                      sifter = data['issues'][i];
+                      sifters = data['issues'][i];
                     }
                   };
 
                   // If we found a sifter, let everyone know what that number is. Otherwise mention that it could not be found
                   if (sifter !== null) {
-                    room.speak("Change Request #" + sifter['number'] + ": " + sifter['subject']);
-                    room.speak("Assigned to: " + sifter['assignee_name']);
-                    room.speak("State: " + sifter['category_name']);
+                    room.speak("Change Request #" + sifters['number'] + ": " + sifters['subject']);
+                    room.speak("Assigned to: " + sifters['assignee_name']);
+                    room.speak("State: " + sifters['category_name']);
                   }
                   else {
                     room.speak("Meow. I could not find that change request.");
