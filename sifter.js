@@ -6,7 +6,7 @@ function processCommand(room, command){
   var options;
   console.log("Processing the command: " + command);
 
-  // All sifters
+  // All sifter related things
   if (command === "/sifters" || command.match(/\/sifter\s+(\d+)/)) {
 
     // Set the headers
@@ -76,5 +76,34 @@ function processCommand(room, command){
         });
       });
     }
-  } // Sifters
+
+  // All Change request things
+  if (command === "/crs" || command.match(/\/cr\s+(\d+)/)) {
+    // Set the headers
+    options = {
+      host: 'fellowshiptech.sifterapp.com',
+      path: '/api/projects/3624/issues?s=1-2',
+      headers: {'X-Sifter-Token': 'b5c0c1aafc3a4db0d6aa55ed51731bd7'}
+    };
+
+    if (command === "/crs") {
+      // Make a request against the Sifter API
+      https.get(options,function(res){
+        res.on('data', function (chunk) {
+          var data = JSON.parse(chunk);
+          var changerequests = new Array();
+          // If no iissues come back, let everyone know.
+          if (data['issues'].length === 0) {
+            room.speak("Meow. There are no open change requests.");
+          }
+          else {
+            for (var i = 0; i < data['issues'].length; i++) {
+              changerequests.push(data['issues'][i]['number']);
+            };
+          }
+          room.speak("The following change requests are open: " + changerequests.join(", ") + ". Type /cr <number> to see more info.");
+        });
+      });
+    }
+  }  
 }

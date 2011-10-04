@@ -153,7 +153,7 @@ var room = client.room(roomNumber, function(room) {
           });
         }
 
-        // Sifter
+        // Sifter and Change Requests
         if (message.body !== null) { 
 
           // Match on the /sifters command
@@ -165,6 +165,13 @@ var room = client.room(roomNumber, function(room) {
           if (message.body.match(/\/sifter\s+(\d+)/)) {
             sifter.processCommand(room, message.body);
           }
+
+          // Match on the /crs command
+          if (message.body === "/crs") {
+            sifter.processCommand(room, "/crs");
+          }
+
+
         } 
 
         // Change request
@@ -174,29 +181,6 @@ var room = client.room(roomNumber, function(room) {
             path: '/api/projects/3624/issues?s=1-2',
             headers: {'X-Sifter-Token': 'b5c0c1aafc3a4db0d6aa55ed51731bd7'}
           };
-
-          // Match on the /crs command
-          if (message.body === "/crs") {
-            console.log("Someone made a request to see all the change requests");
-
-            // Make a request against the Sifter API
-            https.get(options,function(res){
-              res.on('data', function (chunk) {
-                var data = JSON.parse(chunk);
-                var changerequests = new Array();
-                // If no iissues come back, let everyone know.
-                if (data['issues'].length === 0) {
-                  room.speak("Meow. There are no open change requests.");
-                }
-                else {
-                  for (var i = 0; i < data['issues'].length; i++) {
-                    changerequests.push(data['issues'][i]['number']);
-                  };
-                }
-                room.speak("The following change requests are open: " + changerequests.join(", ") + ". Type /cr <number> to see more info.");
-              });
-            });
-          }
 
           // Match on the /cr <number> command
           if (message.body.match(/\/cr\s+(\d+)/)) {
