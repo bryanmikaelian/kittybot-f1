@@ -132,7 +132,7 @@ function processCommand(room, command){
             };
 
             // If we found a sifter, let everyone know what that number is. Otherwise mention that it could not be found
-            if (sifter !== null) {
+            if (cr !== null) {
               room.speak("Change Request #" + cr['number'] + ": " + cr['subject']);
               room.speak("Assigned to: " + cr['assignee_name']);
               room.speak("State: " + cr['category_name']);
@@ -158,13 +158,23 @@ this.pollAPI = function(redisdb, callback) {
 
   // Does the redis hash exist?
   redisdb.keys("open_issues", function(err, value){
-    if (value.length >= 1) {
-      console.log("Redis hash already exists");
+    if (value.length >= 0) {
+      // Redis hash exists.  Get all the sifters from Sifter's API
+      https.get(options,function(res){
+        res.on('data', function (chunk) {
+          var data = JSON.parse(chunk);
+          var issues = new Array();
+          // For each issue, see if it exists in the redis hash.
+          for (var i = 0; i < data['issues'].length; i++) {
+            redisdb.hexists("open_issues", data['issues'][i]['number'], function(err, value){
+              console.log(value);
+            });
+          };
+        });
+      });
     }
     else {
-      // The redis hash does exist
-      console.log("Redis hash doesn't exist");
-      // It doesn't.  Get all the sifters and thrown them into the redis hash.
+      // The redis hash doesn't exist exist.  Populate the hash
       https.get(options,function(res){
         res.on('data', function (chunk) {
           var data = JSON.parse(chunk);
