@@ -148,7 +148,7 @@ function processCommand(room, command){
 } 
 
 this.pollAPI = function(redisdb, callback) {
-  console.log("[" + Date.now() + "] Checking the Sifter API for new data.");
+  console.log("Checking the Sifter API for new data.");
 
   var options = {
     host: 'fellowshiptech.sifterapp.com',
