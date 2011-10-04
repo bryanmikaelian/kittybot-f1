@@ -11,7 +11,7 @@ if (process.env.REDISTOGO_URL) {
   var redis = require('redis'), redisdb = redis.createClient();
 }
 
-var roomNumber = 439862;
+var roomNumber = 373588;
 
 console.log("Starting Kittybot...");
 
