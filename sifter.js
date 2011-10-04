@@ -132,7 +132,7 @@ function processCommand(room, command){
             };
 
             // If we found a sifter, let everyone know what that number is. Otherwise mention that it could not be found
-            if (sifter !== null) {
+            if (cr !== null) {
               room.speak("Change Request #" + cr['number'] + ": " + cr['subject']);
               room.speak("Assigned to: " + cr['assignee_name']);
               room.speak("State: " + cr['category_name']);
