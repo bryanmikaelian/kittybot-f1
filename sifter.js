@@ -76,6 +76,7 @@ function processCommand(room, command){
         });
       });
     }
+  } // if block for sifters
 
   // All Change request things
   if (command === "/crs" || command.match(/\/cr\s+(\d+)/)) {
@@ -105,5 +106,43 @@ function processCommand(room, command){
         });
       });
     }
-  }  
-}
+    // Match on the /cr <number> command
+    if (command.match(/\/cr\s+(\d+)/)) {
+      // Get the number
+      var crNumber = command.replace(/\/cr\s+(\d+)/i, "$1");
+
+      // Hold the data for the specific change request
+      var cr = null;
+
+      //Make a request against the Sifter API
+      https.get(options,function(res){
+        res.on('data', function (chunk) {
+          var data = JSON.parse(chunk);
+          var issues = new Array();
+          // If no iissues come back, let everyone know.
+          if (data['issues'].length === 0) {
+            room.speak("Meow. There are no open change requests.");
+          }
+          else {
+            // Look at each issue.  If its number is the one requested, store it in the sifter variable.
+            for (var i = 0; i < data['issues'].length; i++) {
+              if (data['issues'][i]['number'].toString() === crNumber) {
+                cr = data['issues'][i];
+              }
+            };
+
+            // If we found a sifter, let everyone know what that number is. Otherwise mention that it could not be found
+            if (sifter !== null) {
+              room.speak("Change Request #" + cr['number'] + ": " + cr['subject']);
+              room.speak("Assigned to: " + cr['assignee_name']);
+              room.speak("State: " + cr['category_name']);
+            }
+            else {
+              room.speak("Meow. I could not find that change request.");
+            }
+          }
+        });
+      });
+    }
+  } // if block for change requests
+} 
