@@ -148,7 +148,7 @@ function processCommand(room, command){
 } 
 
 this.pollAPI = function(redisdb, callback) {
-  console.log("Checking the Sifter API for new data.");
+  console.log("[" + Date.now() + "] Checking the Sifter API for new data.");
 
   var options = {
     host: 'fellowshiptech.sifterapp.com',
@@ -164,13 +164,20 @@ this.pollAPI = function(redisdb, callback) {
         res.on('data', function (chunk) {
           var data = JSON.parse(chunk);
           var issues = new Array();
-          // For each issue, see if it exists in the redis hash.
+          // Store all the issues that came back from the API (e.g. the up to date data) in an array
           for (var i = 0; i < data['issues'].length; i++) {
-            redisdb.hexists("open_issues", data['issues'][i]['number'], function(err, value){
-              console.log(value);
-            });
+            issues.push(data['issues'][i]['number']);
           };
-        });
+          // First see what fields in the hash don't match up the latest set issue numbers. Any fields in the hash but not in the list of issue numbers needs to be removed
+          redisdb.hkeys("open_issues", function(err, keys){
+            // For each key in the returned data, if it doesn't exist, remove it from the redis hash.
+            for (var i = 0; i < keys.length; i++) {
+              if (issues.indexOf(parseInt(keys[i])) === -1) {
+                redisdb.hdel("open_issues", keys[i]);
+              }
+            };
+          });
+         });
       });
     }
     else {
