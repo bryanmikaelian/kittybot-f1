@@ -153,28 +153,24 @@ var room = client.room(roomNumber, function(room) {
         }
 
         // Sifter and Change Requests
-        if (message.body !== null) { 
+        // Match on the /sifters command
+        if (message.body === "/sifters") {
+          sifter.processCommand(room, "/sifters");
+        }
 
-          // Match on the /sifters command
-          if (message.body === "/sifters") {
-            sifter.processCommand(room, "/sifters");
-          }
+        // Match on the /sifter <number> command
+        if (message.body.match(/\/sifter\s+(\d+)/)) {
+          sifter.processCommand(room, message.body);
+        }
 
-          // Match on the /sifter <number> command
-          if (message.body.match(/\/sifter\s+(\d+)/)) {
-            sifter.processCommand(room, message.body);
-          }
+        // Match on the /crs command
+        if (message.body === "/crs") {
+          sifter.processCommand(room, "/crs");
+        }
 
-          // Match on the /crs command
-          if (message.body === "/crs") {
-            sifter.processCommand(room, "/crs");
-          }
-
-          // Match on the /cr command
-          if (message.body.match(/\/cr\s+(\d+)/)) {
-            sifter.processCommand(room, message.body);
-          }
-
+        // Match on the /cr command
+        if (message.body.match(/\/cr\s+(\d+)/)) {
+          sifter.processCommand(room, message.body);
         }
       });
 
