@@ -65,8 +65,7 @@ var room = client.room(roomNumber, function(room) {
             // When a user connects. add them from the redis set
             console.log(user.name + " has connected.");
             redisdb.sadd("connected_users", user.name);
-            room.speak("Meow. Hello " + user.name + ". Is it me you are looking for?");
-            this.represent("bob");
+            room.speak("Meow. Hello " + user.name + ". Is it me you are looking for?"); 
           });
         }
 
