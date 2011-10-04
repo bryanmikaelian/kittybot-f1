@@ -115,7 +115,7 @@ var room = client.room(roomNumber, function(room) {
           console.log("Kittybot purred.");
           room.speak("Purrrrrrr");
         }
-        
+
         // Jingyi? 
         if (message.body === "/jingyi") {
           console.log("Kittybot told every to not be stupid.");
@@ -135,7 +135,7 @@ var room = client.room(roomNumber, function(room) {
             room.speak("Make sense?");
           }
         }
-        
+
         // Rimshot counter
         if (message.type === "SoundMessage" && message.body == "rimshot") {
           console.log("Someone played a rimshot");
@@ -176,7 +176,7 @@ var room = client.room(roomNumber, function(room) {
             sifter.processCommand(room, message.body);
           }
 
-        } 
+        }
       });
     }
   }, 2000);
