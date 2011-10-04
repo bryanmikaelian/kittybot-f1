@@ -177,6 +177,13 @@ var room = client.room(roomNumber, function(room) {
 
         }
       });
+
+      // Poll the sifter API to check for new defects if every 30 seconds
+      console.log("Polling against the Sifter API is now enabled.");
+      setInterval(function() {
+        sifter.pollAPI(redisdb, function(issues) {
+        });
+      }, 5000);
     }
   }, 2000);
 });

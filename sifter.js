@@ -1,5 +1,5 @@
 var https = require('https');
-
+var APIKEY = 'b5c0c1aafc3a4db0d6aa55ed51731bd7'
 this.processCommand = processCommand;
 
 function processCommand(room, command){        
@@ -13,7 +13,7 @@ function processCommand(room, command){
     options = {
       host: 'fellowshiptech.sifterapp.com',
       path: '/api/projects/5348/issues?s=1-2',
-      headers: {'X-Sifter-Token': 'b5c0c1aafc3a4db0d6aa55ed51731bd7'}
+      headers: {'X-Sifter-Token': APIKEY}
     };
 
     // If someone wants all the sifters, make a request against the Sifter API to get all the open issues
@@ -84,7 +84,7 @@ function processCommand(room, command){
     options = {
       host: 'fellowshiptech.sifterapp.com',
       path: '/api/projects/3624/issues?s=1-2',
-      headers: {'X-Sifter-Token': 'b5c0c1aafc3a4db0d6aa55ed51731bd7'}
+      headers: {'X-Sifter-Token': APIKEY}
     };
 
     if (command === "/crs") {
@@ -146,3 +146,35 @@ function processCommand(room, command){
     }
   } // if block for change requests
 } 
+
+this.pollAPI = function(redisdb, callback) {
+  console.log("Checking the Sifter API for new data.");
+
+  var options = {
+    host: 'fellowshiptech.sifterapp.com',
+    path: '/api/projects/5348/issues?s=1-2',
+    headers: {'X-Sifter-Token': APIKEY}
+  };
+
+  // Does the redis hash exist?
+  redisdb.keys("open_issues", function(err, value){
+    if (value.length >= 1) {
+      console.log("Redis hash already exists");
+    }
+    else {
+      // The redis hash does exist
+      console.log("Redis hash doesn't exist");
+      // It doesn't.  Get all the sifters and thrown them into the redis hash.
+      https.get(options,function(res){
+        res.on('data', function (chunk) {
+          var data = JSON.parse(chunk);
+          var issues = new Array();
+          // Add all of the issues to a redis hash.  The key is the sifter number and the value is the API URL
+          for (var i = 0; i < data['issues'].length; i++) {
+            redisdb.hset("open_issues", data['issues'][i]['number'], data['issues'][i]['api_url']);
+          };
+        });
+      });
+    }
+  });
+}
