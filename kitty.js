@@ -2,6 +2,9 @@ var http = require('http');
 var https = require('https');
 var client = require('ranger').createClient("fellowshiptech", "7bda324c83352c4839ee47e6ff842ed759aaf54b");
 var sifter = require('./sifter');
+var lol = require('LOLTranslate');
+
+var catNipOn = false;
 
 if (process.env.REDISTOGO_URL) {
   var rtg   = require("url").parse(process.env.REDISTOGO_URL);
@@ -12,7 +15,7 @@ if (process.env.REDISTOGO_URL) {
 }
 
 var roomNumber = 439862;
-
+var catNipOn = false;
 console.log("Starting Kittybot...");
 
 http.createServer(function(req, res) {
@@ -39,7 +42,7 @@ var room = client.room(roomNumber, function(room) {
       else {
         console.log("Kittybot has joined the room " + room.name);
         room.join(); 
-        room.speak("Meow.  I am here to serve.  Please type /help if you need assistance. kthxbye.");
+        speak("Meow.  I am here to serve.  Please type /help if you need assistance. kthxbye.");
         redisdb.sadd("connected_users", "Kittybot");
       }
     });
@@ -65,7 +68,7 @@ var room = client.room(roomNumber, function(room) {
             // When a user connects. add them from the redis set
             console.log(user.name + " has connected.");
             redisdb.sadd("connected_users", user.name);
-            room.speak("Meow. Hello " + user.name + ". Is it me you are looking for?"); 
+            speak("Meow. Hello " + user.name + ". Is it me you are looking for?"); 
           });
         }
 
@@ -82,8 +85,8 @@ var room = client.room(roomNumber, function(room) {
         if (message.body === "/nukekitty") {
           client.user(message.userId, function(user) {
             if (user.name === "Bryan Mikaelian") {
-              room.speak("NUCLEAR LAUNCH DETECTED. Kittybot destruction will now occur.");
-              room.speak("Meow?");
+              speak("NUCLEAR LAUNCH DETECTED. Kittybot destruction will now occur.");
+              speak("Meow?");
               console.log("Kittybot has been marked for nuclear detonation in the room " + room.name);
               setTimeout(function() {
                 room.leave();
@@ -94,7 +97,7 @@ var room = client.room(roomNumber, function(room) {
               }, 5000);
             }
             else {
-              room.speak("Not enough minerals.");
+              speak("Not enough minerals.");
             }
           });
         }
@@ -102,34 +105,28 @@ var room = client.room(roomNumber, function(room) {
         // Help
         if (message.body === "/help") {
           console.log("Someone requested help.");
-          room.speak("Meow. I support the following commands: /dismisskitty, /meow, /purr, /jingyi, /rimshots, /sifters, /sifter <number>, /crs, /cr <number>, /catnip, /agonycat");
+          room.speak("Meow. I support the following commands: /dismisskitty, /meow, /purr, /jingyi, /rimshots, /sifters, /sifter <number>, /crs, /cr <number>, /catnip <on,off>, /agonycat");
         }
 
         // Random cat noises
         if (message.body === "/meow") {
           console.log("Kittybot said meow.");
-          room.speak("Meow!");
+          speak("Meow!");
         }
         if (message.body === "/purr") {
           console.log("Kittybot purred.");
-          room.speak("Purrrrrrr");
+          speak("Purrrrrrr");
         }
 
         // Jingyi? 
         if (message.body === "/jingyi") {
           console.log("Kittybot told every to not be stupid.");
-          room.speak("Don't be stupid!");
-        }
-
-        // catnip
-        if(message.body === "/catnip"){
-          console.log("Kittybot will take the next post and make it 1337 speak");
-          room.speak("Can haz kittybot?  Yes, can haz. meowz.")
+          speak("Don't be stupid!");
         }
 
         // agonycat
         if(message.body === "/agonycat"){
-          console.log("Kittybot will find and post  agony cat videos");
+          console.log("Kittybot will find and post agony cat videos");
 
           agonycat = [
           "http://www.youtube.com/watch?v=yyOxT2rz77g",
@@ -138,7 +135,7 @@ var room = client.room(roomNumber, function(room) {
           "http://www.youtube.com/watch?v=f88jm10REfA",
           "http://www.youtube.com/watch?v=CfW69rHtxIo"]
 
-          room.speak("Meow. Code must be compiling, why don't you watch something while you wait... meow.");
+          speak("Meow. Code must be compiling, why don't you watch something while you wait... meow.");
           room.speak(agonycat[Math.floor(Math.random()*agonycat.length)]);
 
         }
@@ -147,7 +144,7 @@ var room = client.room(roomNumber, function(room) {
         if (message.body != null) {
           if (message.body.length > 165) {
             console.log("Make sense?");
-            room.speak("Make sense?");
+            speak("Make sense?");
           }
         }
 
@@ -164,7 +161,7 @@ var room = client.room(roomNumber, function(room) {
         if (message.body === "/rimshots") {
           console.log("Someone requested the total rimshots");
           redisdb.get("total_rimshots", function(err, value) {
-            room.speak("Meow. Total rimshots played: " + value);
+            speak("Meow. Total rimshots played: " + value);
           });
         }
 
@@ -189,6 +186,17 @@ var room = client.room(roomNumber, function(room) {
           if (message.body.match(/\/cr\s+(\d+)/)) {
             sifter.processCommand(room, message.body);
           }
+
+		  if (message.body.match(/\/catnip\s+(on)/)) {
+			console.log("Kittybot is nommin some catnip");
+			catNipOn = true;
+			sifter.catNipOn = true;
+          }
+		  if (message.body.match(/\/catnip\s+(off)/)) {
+			console.log("Kittybot has stopped nommin the catnip");
+			catNipOn = false;
+			sifter.catNipOn = false;
+          }
         }
       });
 
@@ -196,9 +204,18 @@ var room = client.room(roomNumber, function(room) {
       console.log("Polling against the Sifter API is now enabled.");
       setInterval(function() {
         sifter.pollAPI(redisdb, function(issue) {
-          room.speak(issue['opener_name'] + " has opened Sifter #" + issue['number'] + ": " + issue['subject']);
+          speak(issue['opener_name'] + " has opened Sifter #" + issue['number'] + ": " + issue['subject']);
         });
       }, 60000);
     }
   }, 2000);
+  	var speak = function(message){
+		if(catNipOn){
+	    	room.speak(lol.LOLTranslate(message));
+		}
+		else{
+			room.speak(message);
+		}	
+	
+	}
 });
