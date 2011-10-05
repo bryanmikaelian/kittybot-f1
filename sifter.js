@@ -216,7 +216,7 @@ this.getAll = function(callback) {
       headers: {'X-Sifter-Token': APIKEY }
   }; 
 
-  // For each project, get all the issues
+  // Get all the issues
   https.get(options, function(res){
     res.on('data', function (chunk) {
       var issues = JSON.parse(chunk);
