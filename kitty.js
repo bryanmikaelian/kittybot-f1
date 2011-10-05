@@ -143,31 +143,31 @@ var room = client.room(roomNumber, function(room) {
         // afk
         if (message.body === "afk") {
           console.log("Someone went AFK");
-          room.speak("Good luck on the interview bro.");
+          speak("Good luck on the interview bro.");
         }
 
         // brb
         if (message.body === "brb") {
           console.log("Someone said brb.");
-          room.speak("I bet they aren't coming back...");
+          speak("I bet they aren't coming back...");
         }
 
         // rangers
         if (message.body === "/rangers") {
           console.log("Someone cheered for the rangers.");
-          room.speak("Go Rangers!");
+          speak("Go Rangers!");
         }
 
         // important
         if (message.body === "/important") {
           console.log("Kittybot is a very important person.");
-          room.speak("I don't think you guys understand. I. AM. A. VERY. IMPORTANT. PERSON.");
+          speak("I don't think you guys understand. I. AM. A. VERY. IMPORTANT. PERSON.");
         }
 
         // I am a teapot
         if (message.body === "/418") {
           console.log("Kittybot is a teapot.");
-          room.speak("I am a teapot.");
+          speak("I am a teapot.");
         }
 
         // Make sense?
