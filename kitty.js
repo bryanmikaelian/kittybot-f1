@@ -235,6 +235,7 @@ var room = client.room(roomNumber, function(room) {
         console.log("Polling against the Sifter API is now enabled.");
         setInterval(function() {
           sifter.pollAPI(redisdb, function(issue) {
+            console.log("Polling the Sifter API...");
             speak(issue['opener_name'] + " has opened the following sifter: Sifter #" + issue['number'] + ": " + issue['subject']);
           });
         }, 60000);
