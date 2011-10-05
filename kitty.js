@@ -4,9 +4,6 @@ var client = require('ranger').createClient("fellowshiptech", "7bda324c83352c483
 var lol = require('./LOLTranslate');
 var sifter = require('./sifter');
 
-
-var catNipOn = false;
-
 if (process.env.REDISTOGO_URL) {
   var rtg   = require("url").parse(process.env.REDISTOGO_URL);
   var redis = require("redis"), redisdb = redis.createClient(rtg.port, rtg.hostname);
@@ -17,6 +14,7 @@ if (process.env.REDISTOGO_URL) {
 
 var roomNumber = 373588;
 var catNipOn = false;
+var sifterPollerOn = true;
 
 console.log("Starting Kittybot...");
 
@@ -232,13 +230,17 @@ var room = client.room(roomNumber, function(room) {
         }
       });
 
-      // Poll the sifter API to check for new defects every 60 seconds
-      // console.log("Polling against the Sifter API is now enabled.");
-      // setInterval(function() {
-      //   sifter.pollAPI(redisdb, function(issue) {
-      //     speak(issue['opener_name'] + " has opened Sifter #" + issue['number'] + ": " + issue['subject']);
-      //   });
-      // }, 60000);
+      if (sifterPollerOn) {
+        console.log("Polling against the Sifter API is now enabled.");
+        setInterval(function() {
+          sifter.pollAPI(redisdb, function(issue) {
+            speak(issue['opener_name'] + " has opened the following sifter: Sifter #" + issue['number'] + ": " + issue['subject']);
+          });
+        }, 60000);
+      }
+      else {
+        console.log("Polling against the Sifter API is disabled.");
+      }
     }
   }, 2000);
   var speak = function(message){
