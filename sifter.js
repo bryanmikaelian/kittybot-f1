@@ -5,9 +5,13 @@ var sifterNumber;
 this.processCommand = function processCommand(room, command){        
   console.log("Processing the command: " + command);
   var options;
+  var type;
+  var cmd;
   // Set everything up
   // Is someone looking for a sifter?
   if (command === "/sifters" || command.match(/\/sifter\s+(\d+)/)) {
+    type = "sifters";
+    cmd = "/sifter"
     // Set the headers
     options = {
       host: 'fellowshiptech.sifterapp.com',
@@ -22,6 +26,8 @@ this.processCommand = function processCommand(room, command){
   }
   // Is someone looking for a change request?
   else if (command === "/crs" || command.match(/\/cr\s+(\d+)/))  {
+     type = "change requests";
+     cmd = "/cr";
      // Set the headers
      options = {
        host: 'fellowshiptech.sifterapp.com',
@@ -51,7 +57,7 @@ this.processCommand = function processCommand(room, command){
         for (var i = 0; i < sifters.length; i++) {
           issues.push(sifters[i]['number']);
         };
-        room.speak("The following sifters are open: " + issues.join(", ") + ". Type " + command + " <number> to see more info.");
+        room.speak("The following " + type + " are open: " + issues.join(", ") + ". Type " + cmd + " <number> to see more info.");
       }
     });
   }
