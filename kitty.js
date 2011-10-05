@@ -127,6 +127,22 @@ var room = client.room(roomNumber, function(room) {
           room.speak("Can haz kittybot?  Yes, can haz. meowz.")
         }
 
+		// agonycat
+        if(message.body === "/agonycat"){
+        	console.log("Kittybot will find and post  agony cat videos");
+			
+			agonycat = [
+			"http://www.youtube.com/watch?v=yyOxT2rz77g",
+			"http://www.youtube.com/watch?v=f_VdySnHsJY",
+			"http://www.youtube.com/watch?v=Ck378EnrZIU",
+			"http://www.youtube.com/watch?v=f88jm10REfA",
+			"http://www.youtube.com/watch?v=CfW69rHtxIo"]
+			
+			room.speak("Meow. Code must be compiling, why don't you watch something while you wait... meow.");
+			room.speak(agonycat[Math.floor(Math.random()*agonycat.length)]);
+			
+        }
+
         // Make sense?
         if (message.body != null) {
           if (message.body.length > 165) {
