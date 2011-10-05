@@ -17,22 +17,17 @@ this.processCommand = function processCommand(room, command){
 
     // If someone wants all the sifters, make a request against the Sifter API to get all the open issues
     if (command === "/sifters") {
-
-      https.get(options,function(res){
-        res.on('data', function (chunk) {
-          var data = JSON.parse(chunk);
-          var issues = new Array();
-          // If no iissues come back, let everyone know.
-          if (data['issues'].length === 0) {
+      var issues = new Array();
+      this.getAll(function(sifters){
+        if (sifters.length === 0) {
             room.speak("Meow. There are no open sifters.");
-          }
-          else {
-            for (var i = 0; i < data['issues'].length; i++) {
-              issues.push(data['issues'][i]['number']);
-            };
-          }
+        }
+        else {
+          for (var i = 0; i < sifters.length; i++) {
+            issues.push(sifters[i]['number']);
+          };
           room.speak("The following sifters are open: " + issues.join(", ") + ". Type /sifter <number> to see more info.");
-        });
+        }
       });
     }
 
