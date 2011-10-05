@@ -233,12 +233,12 @@ var room = client.room(roomNumber, function(room) {
       });
 
       // Poll the sifter API to check for new defects every 60 seconds
-      console.log("Polling against the Sifter API is now enabled.");
-      setInterval(function() {
-        sifter.pollAPI(redisdb, function(issue) {
-          speak(issue['opener_name'] + " has opened Sifter #" + issue['number'] + ": " + issue['subject']);
-        });
-      }, 60000);
+      // console.log("Polling against the Sifter API is now enabled.");
+      // setInterval(function() {
+      //   sifter.pollAPI(redisdb, function(issue) {
+      //     speak(issue['opener_name'] + " has opened Sifter #" + issue['number'] + ": " + issue['subject']);
+      //   });
+      // }, 60000);
     }
   }, 2000);
   var speak = function(message){
