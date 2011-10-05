@@ -102,7 +102,7 @@ var room = client.room(roomNumber, function(room) {
         // Help
         if (message.body === "/help") {
           console.log("Someone requested help.");
-          room.speak("Meow. I support the following commands: /dismisskitty, /meow, /purr, /jingyi, /rimshots, /sifters, /sifter <number>, /crs, /cr <number>, /catnip");
+          room.speak("Meow. I support the following commands: /dismisskitty, /meow, /purr, /jingyi, /rimshots, /sifters, /sifter <number>, /crs, /cr <number>, /catnip, /agonycat, /rangers, /important, /418");
         }
 
         // Random cat noises
@@ -125,6 +125,52 @@ var room = client.room(roomNumber, function(room) {
         if(message.body === "/catnip"){
           console.log("Kittybot will take the next post and make it 1337 speak");
           room.speak("Can haz kittybot?  Yes, can haz. meowz.")
+        }
+
+        // agonycat
+        if(message.body === "/agonycat"){
+          console.log("Kittybot will find and post  agony cat videos");
+
+          agonycat = [
+          "http://www.youtube.com/watch?v=yyOxT2rz77g",
+          "http://www.youtube.com/watch?v=f_VdySnHsJY",
+          "http://www.youtube.com/watch?v=Ck378EnrZIU",
+          "http://www.youtube.com/watch?v=f88jm10REfA",
+          "http://www.youtube.com/watch?v=CfW69rHtxIo"]
+
+          room.speak("Meow. Code must be compiling, why don't you watch something while you wait... meow.");
+          room.speak(agonycat[Math.floor(Math.random()*agonycat.length)]);
+
+        }
+
+        // afk
+        if (message.body === "afk") {
+          console.log("Someone went AFK");
+          room.speak("Good luck on the interview bro.");
+        }
+
+        // brb
+        if (message.body === "brb") {
+          console.log("Someone said brb.");
+          room.speak("I bet they aren't coming back...");
+        }
+
+        // rangers
+        if (message.body === "/rangers") {
+          console.log("Someone cheered for the rangers.");
+          room.speak("Go Rangers!");
+        }
+
+        // important
+        if (message.body === "/important") {
+          console.log("Kittybot is a very important person.");
+          room.speak("I don't think you guys understand. I. AM. A. VERY. IMPORTANT. PERSON.");
+        }
+
+        // I am a teapot
+        if (message.body === "/418") {
+          console.log("Kittybot is a teapot.");
+          room.speak("I am a teapot.");
         }
 
         // Make sense?
@@ -153,30 +199,36 @@ var room = client.room(roomNumber, function(room) {
         }
 
         // Sifter and Change Requests
-        if (message.body !== null) { 
+        // Match on the /sifters command
+        if (message.body === "/sifters") {
+          sifter.processCommand(room, "/sifters");
+        }
 
-          // Match on the /sifters command
-          if (message.body === "/sifters") {
-            sifter.processCommand(room, "/sifters");
-          }
+        // Match on the /crs command
+        if (message.body === "/crs") {
+          sifter.processCommand(room, "/crs");
+        }
 
+        if (message.body != null ) {
           // Match on the /sifter <number> command
           if (message.body.match(/\/sifter\s+(\d+)/)) {
             sifter.processCommand(room, message.body);
-          }
-
-          // Match on the /crs command
-          if (message.body === "/crs") {
-            sifter.processCommand(room, "/crs");
           }
 
           // Match on the /cr command
           if (message.body.match(/\/cr\s+(\d+)/)) {
             sifter.processCommand(room, message.body);
           }
-
         }
       });
+
+      // Poll the sifter API to check for new defects every 60 seconds
+      console.log("Polling against the Sifter API is now enabled.");
+      setInterval(function() {
+        sifter.pollAPI(redisdb, function(issue) {
+          room.speak(issue['opener_name'] + " has opened Sifter #" + issue['number'] + ": " + issue['subject']);
+        });
+      }, 60000);
     }
   }, 2000);
 });
