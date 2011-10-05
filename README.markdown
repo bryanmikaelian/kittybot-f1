@@ -16,3 +16,6 @@ kittybot commands
 * /crs - Kittybot will run out to the sifter litter box and look for any uncovered (i.e. open) change requests
 * /catnip - l33t speak kittybot
 * /agonycat - Kittybot will post a random cat mascot video for you viewing pleasure
+* /rangers - Kittybot will cheer for the rangers.
+* /important - Kittybot will inform you of just how awesome they are
+* /418 - Kittybot will turn into a teapot

@@ -105,7 +105,7 @@ var room = client.room(roomNumber, function(room) {
         // Help
         if (message.body === "/help") {
           console.log("Someone requested help.");
-          room.speak("Meow. I support the following commands: /dismisskitty, /meow, /purr, /jingyi, /rimshots, /sifters, /sifter <number>, /crs, /cr <number>, /catnip <on,off>, /agonycat");
+          room.speak("Meow. I support the following commands: /dismisskitty, /meow, /purr, /jingyi, /rimshots, /sifters, /sifter <number>, /crs, /cr <number>, /catnip <on,off>, /agonycat, /rangers, /important, /418");
         }
 
         // Random cat noises
@@ -138,6 +138,36 @@ var room = client.room(roomNumber, function(room) {
           speak("Meow. Code must be compiling, why don't you watch something while you wait... meow.");
           room.speak(agonycat[Math.floor(Math.random()*agonycat.length)]);
 
+        }
+
+        // afk
+        if (message.body === "afk") {
+          console.log("Someone went AFK");
+          room.speak("Good luck on the interview bro.");
+        }
+
+        // brb
+        if (message.body === "brb") {
+          console.log("Someone said brb.");
+          room.speak("I bet they aren't coming back...");
+        }
+
+        // rangers
+        if (message.body === "/rangers") {
+          console.log("Someone cheered for the rangers.");
+          room.speak("Go Rangers!");
+        }
+
+        // important
+        if (message.body === "/important") {
+          console.log("Kittybot is a very important person.");
+          room.speak("I don't think you guys understand. I. AM. A. VERY. IMPORTANT. PERSON.");
+        }
+
+        // I am a teapot
+        if (message.body === "/418") {
+          console.log("Kittybot is a teapot.");
+          room.speak("I am a teapot.");
         }
 
         // Make sense?
