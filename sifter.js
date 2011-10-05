@@ -2,14 +2,13 @@ var https = require('https');
 var APIKEY = 'b5c0c1aafc3a4db0d6aa55ed51731bd7'
 
 this.processCommand = function processCommand(room, command){        
-  var options;
   console.log("Processing the command: " + command);
 
   // All sifter related things
   if (command === "/sifters" || command.match(/\/sifter\s+(\d+)/)) {
 
     // Set the headers
-    options = {
+    var options = {
       host: 'fellowshiptech.sifterapp.com',
       path: '/api/projects/5348/issues?s=1-2',
       headers: {'X-Sifter-Token': APIKEY}
@@ -40,34 +39,28 @@ this.processCommand = function processCommand(room, command){
       // Hold the data for the specific sifter
       var sifter = null;
 
-      // Make a request against the Sifter API to get that issue
-      https.get(options,function(res){
-        res.on('data', function (chunk) {
-          var data = JSON.parse(chunk);
-          var issues = new Array();
-          // If no iissues come back, let everyone know.
-          if (data['issues'].length === 0) {
+      this.getAll(function(sifters){
+        // Check and see if any sifters exist
+        if (sifters.length === 0) {
             room.speak("Meow. There are no open sifters.");
-          }
-          else {
-            // Look at each issue.  If its number is the one requested, store it in the sifter variable.
-            for (var i = 0; i < data['issues'].length; i++) {
-              if (data['issues'][i]['number'].toString() === sifterNumber) {
-                sifter = data['issues'][i];
-                break;
-              }
-            };
-
-            // If we found a sifter, let everyone know what that number is. Otherwise mention that it could not be found
-            if (sifter !== null) {
+        }
+        else {
+          // Sifters exist. Iterate through each one and figure out if the one requested exists
+          for (var i = 0; i < sifters.length; i++) {
+            // If it exists, let the room know.
+            if (sifters[i]['number'].toString() === sifterNumber) {
+              sifter = sifters[i];
               room.speak("Sifter #" + sifter['number'] + ": " + sifter['subject']);
-              room.speak("Current status: " + sifter['status']);
+              room.speak("Assigned to: " + sifter['assignee_name']);
+              room.speak("State: " + sifter['category_name']);
+              break;
             }
-            else {
-              room.speak("Meow. I could not find that sifter.");
-            }
+          };
+          // After iterating through it, if sifter is null then we never found it.  Let the room know.
+          if (sifter === null) {
+             room.speak("Meow. I could not find that sifter.");
           }
-        });
+        }
       });
     }
   } // if block for sifters
@@ -202,7 +195,7 @@ this.pollAPI = function(redisdb, callback) {
 }
 
 this.getAll = function(callback) {
-  console.log("Getting all the issues from sifter");
+  console.log("Making a request against the Sifter API");
   // Hold all the open sifters
   var openSifters = new Array();
   var options = {
@@ -219,6 +212,7 @@ this.getAll = function(callback) {
         openSifters.push(issues['issues'][i]);
       };
       callback(openSifters);
+      console.log("Sifter API request complete.  Response: " + res.statusCode);
     });
   });
 }
