@@ -80,7 +80,7 @@ this.processCommand = function processCommand(room, command){
       var changerequests = new Array();
       this.getAll(options, function(sifters){
         if (sifters.length === 0) {
-            room.speak("Meow. There are no open change requests.");
+          room.speak("Meow. There are no open change requests.");
         }
         else {
           for (var i = 0; i < sifters.length; i++) {
@@ -102,7 +102,7 @@ this.processCommand = function processCommand(room, command){
       this.getAll(options, function(sifters){
         // Check and see if any sifters exist
         if (sifters.length === 0) {
-            room.speak("Meow. There are no open change requests.");
+          room.speak("Meow. There are no open change requests.");
         }
         else {
           // Sifters exist. Iterate through each one and figure out if the one requested exists
@@ -118,7 +118,7 @@ this.processCommand = function processCommand(room, command){
           };
           // After iterating through it, if sifter is null then we never found it.  Let the room know.
           if (cr === null) {
-             room.speak("Meow. I could not find that change request.");
+            room.speak("Meow. I could not find that change request.");
           }
         }
       });
