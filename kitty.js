@@ -1,8 +1,9 @@
 var http = require('http');
 var https = require('https');
 var client = require('ranger').createClient("fellowshiptech", "7bda324c83352c4839ee47e6ff842ed759aaf54b");
+var lol = require('./LOLTranslate');
 var sifter = require('./sifter');
-var lol = require('LOLTranslate');
+
 
 var catNipOn = false;
 
