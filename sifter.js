@@ -1,7 +1,7 @@
 var https = require('https');
 var APIKEY = 'b5c0c1aafc3a4db0d6aa55ed51731bd7'
-this.processCommand = processCommand;
-function processCommand(room, command){        
+
+this.processCommand = function processCommand(room, command){        
   var options;
   console.log("Processing the command: " + command);
 
