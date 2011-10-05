@@ -127,20 +127,20 @@ var room = client.room(roomNumber, function(room) {
           room.speak("Can haz kittybot?  Yes, can haz. meowz.")
         }
 
-		// agonycat
+        // agonycat
         if(message.body === "/agonycat"){
-        	console.log("Kittybot will find and post  agony cat videos");
-			
-			agonycat = [
-			"http://www.youtube.com/watch?v=yyOxT2rz77g",
-			"http://www.youtube.com/watch?v=f_VdySnHsJY",
-			"http://www.youtube.com/watch?v=Ck378EnrZIU",
-			"http://www.youtube.com/watch?v=f88jm10REfA",
-			"http://www.youtube.com/watch?v=CfW69rHtxIo"]
-			
-			room.speak("Meow. Code must be compiling, why don't you watch something while you wait... meow.");
-			room.speak(agonycat[Math.floor(Math.random()*agonycat.length)]);
-			
+          console.log("Kittybot will find and post  agony cat videos");
+
+          agonycat = [
+          "http://www.youtube.com/watch?v=yyOxT2rz77g",
+          "http://www.youtube.com/watch?v=f_VdySnHsJY",
+          "http://www.youtube.com/watch?v=Ck378EnrZIU",
+          "http://www.youtube.com/watch?v=f88jm10REfA",
+          "http://www.youtube.com/watch?v=CfW69rHtxIo"]
+
+          room.speak("Meow. Code must be compiling, why don't you watch something while you wait... meow.");
+          room.speak(agonycat[Math.floor(Math.random()*agonycat.length)]);
+
         }
 
         // Make sense?
@@ -174,28 +174,31 @@ var room = client.room(roomNumber, function(room) {
           sifter.processCommand(room, "/sifters");
         }
 
-        // Match on the /sifter <number> command
-        if (message.body.match(/\/sifter\s+(\d+)/)) {
-          sifter.processCommand(room, message.body);
-        }
-
         // Match on the /crs command
         if (message.body === "/crs") {
           sifter.processCommand(room, "/crs");
         }
 
-        // Match on the /cr command
-        if (message.body.match(/\/cr\s+(\d+)/)) {
-          sifter.processCommand(room, message.body);
+        if (message.body != null ) {
+          // Match on the /sifter <number> command
+          if (message.body.match(/\/sifter\s+(\d+)/)) {
+            sifter.processCommand(room, message.body);
+          }
+
+          // Match on the /cr command
+          if (message.body.match(/\/cr\s+(\d+)/)) {
+            sifter.processCommand(room, message.body);
+          }
         }
       });
 
-      // Poll the sifter API to check for new defects if every 30 seconds
+      // Poll the sifter API to check for new defects every 60 seconds
       console.log("Polling against the Sifter API is now enabled.");
       setInterval(function() {
-        sifter.pollAPI(redisdb, function(issues) {
+        sifter.pollAPI(redisdb, function(issue) {
+          room.speak(issue['opener_name'] + " has opened Sifter #" + issue['number'] + ": " + issue['subject']);
         });
-      }, 5000);
+      }, 60000);
     }
   }, 2000);
 });

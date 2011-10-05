@@ -173,9 +173,20 @@ this.pollAPI = function(redisdb, callback) {
             // For each key in the returned data, if it doesn't exist, remove it from the redis hash.
             for (var i = 0; i < keys.length; i++) {
               if (issues.indexOf(parseInt(keys[i])) === -1) {
+                console.log(keys[i] + " has been removed from the collection of issues.");
                 redisdb.hdel("open_issues", keys[i]);
               }
             };
+            // Now that the redis hash is up to date, see which issues are not present in the redis DB
+            redisdb.hkeys("open_issues", function(err, keys){
+              for (var i = 0; i < issues.length; i++) {
+                if (keys.indexOf(issues[i].toString()) === -1) {
+                  console.log(issues[i] + " has been added as a new issue.");
+                  redisdb.hset("open_issues", issues[i], data['issues'][i]['api_url']);
+                  callback(data['issues'][i]);
+                }
+              };
+            });
           });
          });
       });
