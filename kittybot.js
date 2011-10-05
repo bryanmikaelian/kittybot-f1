@@ -2,7 +2,6 @@ var http = require('http');
 var client = require('ranger').createClient("fellowshiptech", "7bda324c83352c4839ee47e6ff842ed759aaf54b");
 var lol = require('./LOLTranslate');
 var sifter = require('./sifter');
-var core = require('./core');
 
 if (process.env.REDISTOGO_URL) {
   var rtg   = require("url").parse(process.env.REDISTOGO_URL);
@@ -103,7 +102,7 @@ var room = client.room(roomNumber, function(room) {
         }
 
         // Respond to messages
-        core.respond(message, function(){
+        kitty.respond(message, function(){
         });
 
 
