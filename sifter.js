@@ -187,7 +187,6 @@ this.pollAPI = function(redisdb, callback) {
                 }
               };
             });
-            console.log("Polling of the Sifter API complete.");
           });
          });
       });
