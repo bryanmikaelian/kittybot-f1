@@ -15,13 +15,9 @@ if (process.env.REDISTOGO_URL) {
   var redis = require('redis'), redisdb = redis.createClient();
 }
 
-<<<<<<< HEAD
-var roomNumber = 373588;
-
-=======
 var roomNumber = 439862;
 var catNipOn = false;
->>>>>>> 406f4cbcce5ab55802a2d13a3c869e9fb8bc6397
+
 console.log("Starting Kittybot...");
 
 http.createServer(function(req, res) {
