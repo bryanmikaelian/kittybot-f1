@@ -1,1 +1,1 @@
-web: node kitty.js
+web: node kittybot.js
