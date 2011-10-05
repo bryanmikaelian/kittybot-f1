@@ -158,28 +158,31 @@ var room = client.room(roomNumber, function(room) {
           sifter.processCommand(room, "/sifters");
         }
 
-        // Match on the /sifter <number> command
-        if (message.body.match(/\/sifter\s+(\d+)/)) {
-          sifter.processCommand(room, message.body);
-        }
-
         // Match on the /crs command
         if (message.body === "/crs") {
           sifter.processCommand(room, "/crs");
         }
 
-        // Match on the /cr command
-        if (message.body.match(/\/cr\s+(\d+)/)) {
-          sifter.processCommand(room, message.body);
+        if (message.body != null ) {
+          // Match on the /sifter <number> command
+          if (message.body.match(/\/sifter\s+(\d+)/)) {
+            sifter.processCommand(room, message.body);
+          }
+
+          // Match on the /cr command
+          if (message.body.match(/\/cr\s+(\d+)/)) {
+            sifter.processCommand(room, message.body);
+          }
         }
       });
 
-      // Poll the sifter API to check for new defects if every 30 seconds
+      // Poll the sifter API to check for new defects every 60 seconds
       console.log("Polling against the Sifter API is now enabled.");
       setInterval(function() {
-        sifter.pollAPI(redisdb, function(issues) {
+        sifter.pollAPI(redisdb, function(issue) {
+          room.speak(issue['opener_name'] + " has opened Sifter #" + issue['number'] + ": " + issue['subject']);
         });
-      }, 5000);
+      }, 60000);
     }
   }, 2000);
 });
