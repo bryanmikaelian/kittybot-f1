@@ -127,7 +127,6 @@ this.processCommand = function processCommand(room, command){
 } 
 
 this.pollAPI = function(redisdb, callback) {
-  console.log("Checking the Sifter API for new data.");
 
   var options = {
     host: 'fellowshiptech.sifterapp.com',
@@ -135,54 +134,46 @@ this.pollAPI = function(redisdb, callback) {
     headers: {'X-Sifter-Token': APIKEY}
   };
 
-  // Does the redis hash exist?
-  redisdb.keys("open_issues", function(err, value){
-    if (value.length >= 0) {
-      // Redis hash exists.  Get all the sifters from Sifter's API
-      https.get(options,function(res){
-        res.on('data', function (chunk) {
-          var data = JSON.parse(chunk);
-          var issues = new Array();
-          // Store all the issues that came back from the API (e.g. the up to date data) in an array
-          for (var i = 0; i < data['issues'].length; i++) {
-            issues.push(data['issues'][i]['number']);
-          };
-          // First see what fields in the hash don't match up the latest set issue numbers. Any fields in the hash but not in the list of issue numbers needs to be removed
-          redisdb.hkeys("open_issues", function(err, keys){
-            // For each key in the returned data, if it doesn't exist, remove it from the redis hash.
-            for (var i = 0; i < keys.length; i++) {
-              if (issues.indexOf(parseInt(keys[i])) === -1) {
-                console.log(keys[i] + " has been removed from the collection of issues.");
-                redisdb.hdel("open_issues", keys[i]);
-              }
-            };
-            // Now that the redis hash is up to date, see which issues are not present in the redis DB
-            redisdb.hkeys("open_issues", function(err, keys){
-              for (var i = 0; i < issues.length; i++) {
-                if (keys.indexOf(issues[i].toString()) === -1) {
-                  console.log(issues[i] + " has been added as a new issue.");
-                  redisdb.hset("open_issues", issues[i], data['issues'][i]['api_url']);
-                  callback(data['issues'][i]);
-                }
-              };
-            });
-          });
-         });
-      });
-    }
-    else {
-      // The redis hash doesn't exist exist.  Populate the hash
-      https.get(options,function(res){
-        res.on('data', function (chunk) {
-          var data = JSON.parse(chunk);
-          var issues = new Array();
-          // Add all of the issues to a redis hash.  The key is the sifter number and the value is the API URL
-          for (var i = 0; i < data['issues'].length; i++) {
-            redisdb.hset("open_issues", data['issues'][i]['number'], data['issues'][i]['api_url']);
+  //Get all the sifters from Sifter's API
+  this.getAll(options, function(sifters) {
+    // Store all the issues numbers that came back from the API (e.g. the up to date data) in an array
+    var issueNumbers = new Array();
+    for (var i = 0; i < sifters.length; i++) {
+        issueNumbers.push(sifters[i]['number']);
+    };
+    // Does the redis hash exist?
+    redisdb.keys("open_issues", function(err, value){
+      if (value.length >= 0) {
+        // Redis hash exists.
+        // Get all the keys, e.g. numbers, from the redis hash
+        redisdb.hkeys("open_issues", function(err, keys){
+          // For each key in the hash, remove it from the hash if it is doesn't exist in the collection of issue numbers returned from the API
+          for (var i = 0; i < keys.length; i++) {
+            if (issueNumbers.indexOf(parseInt(keys[i])) === -1) {
+              console.log(keys[i] + " has been removed from the collection of issues.");
+              redisdb.hdel("open_issues", keys[i]);
+            }
           };
         });
-      });
-    }
+        // Now that the redis hash is up to date, see which issues are not present in the redis DB
+        redisdb.hkeys("open_issues", function(err, keys){
+          for (var i = 0; i < sifters.length; i++) {
+            if (keys.indexOf(sifters[i]['number'].toString()) === -1) {
+              console.log(sifters[i]['number'] + " has been added as a new issue.");
+              redisdb.hset("open_issues", sifters[i]['number'], sifters[i]['api_url']);
+              callback(sifters[i]);
+            }
+          };
+        });
+      }
+      else {
+      // The redis hash doesn't exist exist.  Populate the hash
+      // Add all of the issues to a redis hash.  The key is the sifter number and the value is the API URL
+        for (var i = 0; i < sifters.length; i++) {
+          redisdb.hset("open_issues", sifters[i]['number'], sifters[i]['api_url']);
+        };
+      }
+    });
   });
 }
 
