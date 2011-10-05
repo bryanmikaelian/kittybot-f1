@@ -219,15 +219,15 @@ var room = client.room(roomNumber, function(room) {
             sifter.processCommand(room, message.body);
           }
 
-		  if (message.body.match(/\/catnip\s+(on)/)) {
-			console.log("Kittybot is nommin some catnip");
-			catNipOn = true;
-			sifter.catNipOn = true;
+          if (message.body.match(/\/catnip\s+(on)/)) {
+            console.log("Kittybot is nommin some catnip");
+            catNipOn = true;
+            sifter.catNipOn = true;
           }
-		  if (message.body.match(/\/catnip\s+(off)/)) {
-			console.log("Kittybot has stopped nommin the catnip");
-			catNipOn = false;
-			sifter.catNipOn = false;
+          if (message.body.match(/\/catnip\s+(off)/)) {
+            console.log("Kittybot has stopped nommin the catnip");
+            catNipOn = false;
+            sifter.catNipOn = false;
           }
         }
       });
@@ -241,13 +241,12 @@ var room = client.room(roomNumber, function(room) {
       }, 60000);
     }
   }, 2000);
-  	var speak = function(message){
-		if(catNipOn){
-	    	room.speak(lol.LOLTranslate(message));
-		}
-		else{
-			room.speak(message);
-		}	
-	
-	}
+  var speak = function(message){
+    if(catNipOn){
+        room.speak(lol.LOLTranslate(message));
+    }
+    else{
+      room.speak(message);
+    }	
+  }
 });
