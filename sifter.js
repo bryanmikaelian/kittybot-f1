@@ -205,3 +205,25 @@ this.pollAPI = function(redisdb, callback) {
     }
   });
 }
+
+this.getAll = function(callback) {
+  console.log("Getting all the issues from sifter");
+  // Hold all the open sifters
+  var openSifters = new Array();
+  var options = {
+      host: 'fellowshiptech.sifterapp.com',
+      path: '/api/projects/5348/issues?s=1-2',
+      headers: {'X-Sifter-Token': APIKEY }
+  }; 
+
+  // For each project, get all the issues
+  https.get(options, function(res){
+    res.on('data', function (chunk) {
+      var issues = JSON.parse(chunk);
+      for (var i = 0; i < issues['issues'].length; i++) {
+        openSifters.push(issues['issues'][i]);
+      };
+      callback(openSifters);
+    });
+  });
+}
