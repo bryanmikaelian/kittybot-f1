@@ -3,6 +3,7 @@ var https = require('https');
 var client = require('ranger').createClient("fellowshiptech", "7bda324c83352c4839ee47e6ff842ed759aaf54b");
 var lol = require('./LOLTranslate');
 var sifter = require('./sifter');
+var core = require('./core');
 
 if (process.env.REDISTOGO_URL) {
   var rtg   = require("url").parse(process.env.REDISTOGO_URL);
@@ -53,6 +54,7 @@ var room = client.room(roomNumber, function(room) {
     if (!room.isListening()) {
       console.log("Listening to the room " + room.name);
       room.listen(function(message){ 
+        core.processCommand(client, message);
 
         // Session stuff
         if (message.type == "LeaveMessage") {
