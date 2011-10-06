@@ -36,9 +36,9 @@ var room = client.room(roomNumber, function(room) {
   var listenInterval = setInterval(function() {
     if (!room.isListening()) {
       console.log("Listening to the room " + room.name);
-      room.listen(function(message){ 
+      room.listen(function(message){
 
-        // Update session as needed 
+        // Update session as needed
         if (message.type == "EnterMessage" || message.type == "LeaveMessage") {
           client.user(message.userId, function (user) { 
             session.update(message.type, user, function(msg){
@@ -49,26 +49,6 @@ var room = client.room(roomNumber, function(room) {
 
         // Need to check to see if the message is not null since we are using .match
         if (message.body != null ) {
-          // Nuke. WARNING THIS WILL REQUIRE A RESTART
-          if (message.body === "/nukekitty") {
-            client.user(message.userId, function(user) {
-              if (user.name === "Bryan Mikaelian") {
-                speak("NUCLEAR LAUNCH DETECTED. Kittybot destruction will now occur.");
-                speak("Meow?");
-                console.log("Kittybot has been marked for nuclear detonation in the room " + room.name);
-                setTimeout(function() {
-                  room.leave();
-                  room.stopListening();
-                  clearInterval(listenInterval);
-                  console.log("Kittybot is no longer with us.");
-                  redisdb.srem("connected_users", "Kittybot");
-                }, 5000);
-              }
-              else {
-                speak("Not enough minerals.");
-              }
-            });
-          }
 
           // General Commands module
           kitty.respond(room, message.body, function(response){
@@ -141,4 +121,3 @@ setInterval(function() {
     });
   });
 }, 600000);
-
