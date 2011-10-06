@@ -52,7 +52,9 @@ var room = client.room(roomNumber, function(room) {
 
           // Sifters module
           if (message.body === "/sifters" || message.body === "/crs" || message.body.match(/\/sifter\s+(\d+)/) || message.body.match(/\/cr\s+(\d+)/)) {
-            sifter.processCommand(room, message.body);
+            sifter.processCommand(room, message.body, function(response){
+              speak(response);
+            });
           }
 
           // Catnip module
@@ -85,7 +87,6 @@ var room = client.room(roomNumber, function(room) {
     console.log("Polling against the Sifter API is now enabled.");
     setInterval(function() {
       sifter.pollAPI(function(issue) {
-        console.log("Polling the Sifter API...");
         speak(issue['opener_name'] + " has opened the following sifter: Sifter #" + issue['number'] + ": " + issue['subject']);
       });
     }, 60000);
