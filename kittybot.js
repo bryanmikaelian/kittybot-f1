@@ -3,6 +3,7 @@ var client = require('ranger').createClient("fellowshiptech", "7bda324c83352c483
 var lol = require('./LOLTranslate');
 var sifter = require('./sifter');
 var kitty = require('./kitty');
+var session = require('./session');
 
 if (process.env.REDISTOGO_URL) {
   var rtg   = require("url").parse(process.env.REDISTOGO_URL);
@@ -25,27 +26,9 @@ http.createServer(function(req, res) {
 }).listen(Number(process.env.PORT) || 8000);
 
 var room = client.room(roomNumber, function(room) {
-  // Flush session when starting for the first time
-  redisdb.del("connected_users");
-  console.log("Set of connected users has been cleared");
 
-
-  // Add all the current users to a redis hash to establish a "session" for the room 
-  room.users(function (users) {
-    for (var i = 0; i < users.length; i++) {
-      redisdb.sadd("connected_users", users[i].name);
-    }
-    redisdb.sismember("connected_users", "Kittybot", function(err, value){
-      if (value === 1) {
-        console.log("Already in the room " + room.name);
-      }
-      else {
-        console.log("Kittybot has joined the room " + room.name);
-        room.join(); 
-        redisdb.sadd("connected_users", "Kittybot");
-      }
-    });
-  });
+  // Init the session
+  session.start(room);
 
   // Start listening for messages. Check every 2 seconds to see if we are listening.
   var listenInterval = setInterval(function() {
