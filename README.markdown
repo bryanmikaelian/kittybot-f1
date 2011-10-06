@@ -23,3 +23,5 @@ kittybot commands
 * /rangers - Kittybot will cheer for the rangers.
 * /important - Kittybot will inform you of just how awesome they are
 * /418 - Kittybot will turn into a teapot
+* /starfox - Does a barrel roll
+* /chuck - Shows a video of an actual kittybot?
