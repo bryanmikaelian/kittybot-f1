@@ -4,21 +4,7 @@ var lol = require('./LOLTranslate');
 var sifter = require('./sifter');
 var kitty = require('./kitty');
 var session = require('./session');
-<<<<<<< HEAD
-
-if (process.env.REDISTOGO_URL) {
-  var rtg   = require("url").parse(process.env.REDISTOGO_URL);
-  var redis = require("redis"), redisdb = redis.createClient(rtg.port, rtg.hostname);
-  redisdb.auth(rtg.auth.split(":")[1]);
-} else {
-  var redis = require('redis'), redisdb = redis.createClient();
-}
-
 var roomNumber = 373588;
-=======
-var counts = require('./counts');
-var roomNumber = 439862;
->>>>>>> development
 var catNipOn = false;
 var sifterPollerOn = true;
 
