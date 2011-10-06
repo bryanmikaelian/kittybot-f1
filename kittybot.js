@@ -25,6 +25,7 @@ http.createServer(function(req, res) {
   res.end("Meow\n");
 }).listen(Number(process.env.PORT) || 8000);
 
+
 var room = client.room(roomNumber, function(room) {
 
   // Start the session for the room
@@ -131,5 +132,20 @@ var room = client.room(roomNumber, function(room) {
   else {
     console.log("Polling against the Sifter API is disabled.");
   }
-
 });
+
+
+// Heroku is dumb. Ping the app every 10 minutes to make sure kittybot doesn't die.
+setInterval(function() {
+  var options = {
+    host: "kittybot.herokuapp.com",
+    path: "/"
+  };
+  console.log("Pinging kittybot.herokuapp.com");
+  https.get(options, function(res){
+    res.on('data', function (chunk) {
+      console.log("Kittybot says: " res.statusCode);
+    });
+  });
+}, 600000);
+
