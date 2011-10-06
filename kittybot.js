@@ -47,7 +47,6 @@ var room = client.room(roomNumber, function(room) {
 
         // Need to check to see if the message is not null since we are using .match
         if (message.body != null ) {
-
           // Nuke. WARNING THIS WILL REQUIRE A RESTART
           if (message.body === "/nukekitty") {
             client.user(message.userId, function(user) {
@@ -70,7 +69,7 @@ var room = client.room(roomNumber, function(room) {
           }
 
           // General Commands module
-          kitty.respond(room, message.body, redisdb, function(response){
+          kitty.respond(room, message.body, function(response){
             speak(response);
           });
 

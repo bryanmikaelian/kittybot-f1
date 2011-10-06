@@ -32,8 +32,6 @@ this.start = function(room){
 }
 
 this.update = function(messageType, user, callback){
-  console.log("Beep");
-  console.log(messageType);
   // If someone joins the room, add them to the redis set and tell them hi
   if (messageType == "EnterMessage") {
     console.log(user.name + " has connected.");
