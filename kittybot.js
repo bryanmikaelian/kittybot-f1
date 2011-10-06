@@ -61,12 +61,10 @@ var room = client.room(roomNumber, function(room) {
           if (message.body.match(/\/catnip\s+(on)/)) {
             console.log("Kittybot is nommin some catnip");
             catNipOn = true;
-            sifter.catNipOn = true;
           }
           if (message.body.match(/\/catnip\s+(off)/)) {
             console.log("Kittybot has stopped nommin the catnip");
             catNipOn = false;
-            sifter.catNipOn = false;
           }
         }
       });
