@@ -30,3 +30,19 @@ this.start = function(room){
     });
   });
 }
+
+this.update = function(messageType, user, callback){
+  console.log("Beep");
+  console.log(messageType);
+  // If someone joins the room, add them to the redis set and tell them hi
+  if (messageType == "EnterMessage") {
+    console.log(user.name + " has connected.");
+    redisdb.sadd("connected_users", user.name);
+    callback("Sup " + user.name);
+  }
+  // If someone leaves the room, remove them from the redis set
+  if (messageType == "LeaveMessage") {
+    console.log(user.name + " has disconnected.");
+    redisdb.srem("connected_users", user.name);
+  }
+}

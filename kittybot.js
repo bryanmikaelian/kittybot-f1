@@ -27,7 +27,7 @@ http.createServer(function(req, res) {
 
 var room = client.room(roomNumber, function(room) {
 
-  // Init the session
+  // Start the session for the room
   session.start(room);
 
   // Start listening for messages. Check every 2 seconds to see if we are listening.
@@ -35,26 +35,18 @@ var room = client.room(roomNumber, function(room) {
     if (!room.isListening()) {
       console.log("Listening to the room " + room.name);
       room.listen(function(message){ 
+
+        // Update session as needed 
+        if (message.type == "EnterMessage" || message.type == "LeaveMessage") {
+          client.user(message.userId, function (user) { 
+            session.update(message.type, user, function(msg){
+              speak(msg);
+            });
+          });
+        }
+
         // Need to check to see if the message is not null since we are using .match
         if (message.body != null ) {
-
-          // Session
-          if (message.type == "LeaveMessage") {
-            client.user(message.userId, function (user) { 
-              // When a user disconeccts. remove them from the redis set
-              console.log(user.name + " has disconnected.");
-              redisdb.srem("connected_users", user.name);
-            });
-          }
-
-          if (message.type == "EnterMessage") {
-            client.user(message.userId, function (user) { 
-              // When a user connects. add them from the redis set
-              console.log(user.name + " has connected.");
-              redisdb.sadd("connected_users", user.name);
-              speak("Meow. Hello " + user.name + ". Is it me you are looking for?"); 
-            });
-          }
 
           // Nuke. WARNING THIS WILL REQUIRE A RESTART
           if (message.body === "/nukekitty") {
