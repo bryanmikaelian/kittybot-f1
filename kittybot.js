@@ -4,7 +4,7 @@ var lol = require('./LOLTranslate');
 var sifter = require('./sifter');
 var kitty = require('./kitty');
 var session = require('./session');
-var roomNumber = 373588;
+var roomNumber = 439862;
 var catNipOn = false;
 var sifterPollerOn = true;
 
