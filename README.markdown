@@ -25,3 +25,4 @@ kittybot commands
 * /418 - Kittybot will turn into a teapot
 * /starfox - Does a barrel roll
 * /chuck - Shows a video of an actual kittybot?
+* /csb - Cool story bro
