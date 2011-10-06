@@ -42,7 +42,6 @@ var room = client.room(roomNumber, function(room) {
       else {
         console.log("Kittybot has joined the room " + room.name);
         room.join(); 
-        speak("Meow.  I am here to serve.  Please type /help if you need assistance. kthxbye.");
         redisdb.sadd("connected_users", "Kittybot");
       }
     });
@@ -54,7 +53,7 @@ var room = client.room(roomNumber, function(room) {
       console.log("Listening to the room " + room.name);
       room.listen(function(message){ 
 
-        // Session stuff
+        // Session Module
         if (message.type == "LeaveMessage") {
           client.user(message.userId, function (user) { 
             // When a user disconeccts. remove them from the redis set
@@ -70,15 +69,6 @@ var room = client.room(roomNumber, function(room) {
             redisdb.sadd("connected_users", user.name);
             speak("Meow. Hello " + user.name + ". Is it me you are looking for?"); 
           });
-        }
-
-        // Dismiss
-        if (message.body === "/dismisskitty") {
-          console.log("Kittybot has been requested to temporarily leave the room " + room.name);
-          room.leave(); 
-          setTimeout(function(){
-            room.join();
-          }, 5000);
         }
 
         // Nuke. WARNING THIS WILL REQUIRE A RESTART
@@ -102,82 +92,26 @@ var room = client.room(roomNumber, function(room) {
           });
         }
 
-        // Respond to messages
-        kitty.respond(message.body, function(response){
-          room.speak(response);
+        // General Commands module
+        kitty.respond(room, message.body, redisdb, function(response){
+          speak(response);
         });
 
-        // Random cat noises
-        if (message.body === "/meow") {
-          console.log("Kittybot said meow.");
-          speak("Meow!");
+        // Sifter API polling module
+        if (sifterPollerOn) {
+          console.log("Polling against the Sifter API is now enabled.");
+          setInterval(function() {
+            sifter.pollAPI(redisdb, function(issue) {
+              console.log("Polling the Sifter API...");
+              speak(issue['opener_name'] + " has opened the following sifter: Sifter #" + issue['number'] + ": " + issue['subject']);
+            });
+          }, 60000);
         }
-        if (message.body === "/purr") {
-          console.log("Kittybot purred.");
-          speak("Purrrrrrr");
-        }
-
-        // Jingyi? 
-        if (message.body === "/jingyi") {
-          console.log("Kittybot told every to not be stupid.");
-          speak("Don't be stupid!");
+        else {
+          console.log("Polling against the Sifter API is disabled.");
         }
 
-        // agonycat
-        if(message.body === "/agonycat"){
-          console.log("Kittybot will find and post agony cat videos");
-
-          agonycat = [
-          "http://www.youtube.com/watch?v=yyOxT2rz77g",
-          "http://www.youtube.com/watch?v=f_VdySnHsJY",
-          "http://www.youtube.com/watch?v=Ck378EnrZIU",
-          "http://www.youtube.com/watch?v=f88jm10REfA",
-          "http://www.youtube.com/watch?v=CfW69rHtxIo"]
-
-          speak("Meow. Code must be compiling, why don't you watch something while you wait... meow.");
-          room.speak(agonycat[Math.floor(Math.random()*agonycat.length)]);
-
-        }
-
-        // afk
-        if (message.body === "afk") {
-          console.log("Someone went AFK");
-          speak("Good luck on the interview bro.");
-        }
-
-        // brb
-        if (message.body === "brb") {
-          console.log("Someone said brb.");
-          speak("I bet they aren't coming back...");
-        }
-
-        // rangers
-        if (message.body === "/rangers") {
-          console.log("Someone cheered for the rangers.");
-          speak("Go Rangers!");
-        }
-
-        // important
-        if (message.body === "/important") {
-          console.log("Kittybot is a very important person.");
-          speak("I don't think you guys understand. I. AM. A. VERY. IMPORTANT. PERSON.");
-        }
-
-        // I am a teapot
-        if (message.body === "/418") {
-          console.log("Kittybot is a teapot.");
-          speak("I am a teapot.");
-        }
-
-        // Make sense?
-        if (message.body != null) {
-          if (message.body.length > 165) {
-            console.log("Make sense?");
-            speak("Make sense?");
-          }
-        }
-
-        // Rimshot counter
+        // SoundMessage counts module
         if (message.type === "SoundMessage" && message.body == "rimshot") {
           console.log("Someone played a rimshot");
           // Update redis
@@ -187,6 +121,7 @@ var room = client.room(roomNumber, function(room) {
           })
         }
 
+        // Rimshot count
         if (message.body === "/rimshots") {
           console.log("Someone requested the total rimshots");
           redisdb.get("total_rimshots", function(err, value) {
@@ -194,18 +129,18 @@ var room = client.room(roomNumber, function(room) {
           });
         }
 
-        // Sifter and Change Requests
-        // Match on the /sifters command or /crs command
-        if (message.body === "/sifters" || message.body === "/crs") {
-          sifter.processCommand(room, message.body);
-        }
-
+        // Need to check to see if the message is not null since we are using .match
         if (message.body != null ) {
-          // Match on the /sifter <number> command or /cr <number command
+
+          // Sifters module
+          if (message.body === "/sifters" || message.body === "/crs") {
+            sifter.processCommand(room, message.body);
+          }
           if (message.body.match(/\/sifter\s+(\d+)/) || message.body.match(/\/cr\s+(\d+)/)) {
             sifter.processCommand(room, message.body);
           }
 
+          // Catnip module
           if (message.body.match(/\/catnip\s+(on)/)) {
             console.log("Kittybot is nommin some catnip");
             catNipOn = true;
@@ -218,20 +153,6 @@ var room = client.room(roomNumber, function(room) {
           }
         }
       });
-
-      // Poll the sifter API to check for new defects every 60 seconds
-      if (sifterPollerOn) {
-        console.log("Polling against the Sifter API is now enabled.");
-        setInterval(function() {
-          sifter.pollAPI(redisdb, function(issue) {
-            console.log("Polling the Sifter API...");
-            speak(issue['opener_name'] + " has opened the following sifter: Sifter #" + issue['number'] + ": " + issue['subject']);
-          });
-        }, 60000);
-      }
-      else {
-        console.log("Polling against the Sifter API is disabled.");
-      }
     }
   }, 2000);
   var speak = function(message){
