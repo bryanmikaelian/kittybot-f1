@@ -4,6 +4,7 @@ var lol = require('./LOLTranslate');
 var sifter = require('./sifter');
 var kitty = require('./kitty');
 var session = require('./session');
+var counts = require('./counts');
 
 if (process.env.REDISTOGO_URL) {
   var rtg   = require("url").parse(process.env.REDISTOGO_URL);
@@ -76,14 +77,7 @@ var room = client.room(roomNumber, function(room) {
 
           // SoundMessage counts module
           if (message.type === "SoundMessage") {
-            if (message.body == "rimshot") {
-              console.log("Someone played a rimshot");
-              // Update redis
-              redisdb.incr("total_rimshots");
-              redisdb.get("total_rimshots", function(err, value) {
-                console.log("Rimshot count updated. The new value is " + value);
-              })
-            }
+            counts.update(message.body);
           }
 
           // Sifters module
@@ -144,7 +138,6 @@ setInterval(function() {
   console.log("Pinging kittybot.herokuapp.com");
   http.get(options, function(res){
     res.on('data', function (chunk) {
-      console.log("Kittybot says: " res.statusCode);
     });
   });
 }, 600000);
