@@ -43,8 +43,8 @@ this.respond = function(room, command, callback){
     "http://www.youtube.com/watch?v=f88jm10REfA",
     "http://www.youtube.com/watch?v=CfW69rHtxIo"]
 
-    speak("Meow. Code must be compiling, why don't you watch something while you wait... meow.");
-    callback.speak(agonycat[Math.floor(Math.random()*agonycat.length)]);
+    callback("Meow. Code must be compiling, why don't you watch something while you wait... meow.");
+    callback(agonycat[Math.floor(Math.random()*agonycat.length)]);
 
   }
 
