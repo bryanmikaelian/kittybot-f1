@@ -103,15 +103,9 @@ var room = client.room(roomNumber, function(room) {
         }
 
         // Respond to messages
-        kitty.respond(message, function(){
+        kitty.respond(message.body, function(response){
+          room.speak(response);
         });
-
-
-        // Help
-        if (message.body === "/help") {
-          console.log("Someone requested help.");
-          room.speak("Meow. I support the following commands: /dismisskitty, /meow, /purr, /jingyi, /rimshots, /sifters, /sifter <number>, /crs, /cr <number>, /catnip <on,off>, /agonycat, /rangers, /important, /418");
-        }
 
         // Random cat noises
         if (message.body === "/meow") {
