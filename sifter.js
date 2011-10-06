@@ -2,6 +2,15 @@ var https = require('https');
 var APIKEY = 'b5c0c1aafc3a4db0d6aa55ed51731bd7'
 var sifterNumber;
 
+if (process.env.REDISTOGO_URL) {
+  var rtg   = require("url").parse(process.env.REDISTOGO_URL);
+  var redis = require("redis"), redisdb = redis.createClient(rtg.port, rtg.hostname);
+  redisdb.auth(rtg.auth.split(":")[1]);
+} else {
+  var redis = require('redis'), redisdb = redis.createClient();
+}
+
+
 this.processCommand = function processCommand(room, command){        
   console.log("Processing the command: " + command);
   var options;
@@ -92,7 +101,7 @@ this.processCommand = function processCommand(room, command){
   }
 }
 
-this.pollAPI = function(redisdb, callback) {
+this.pollAPI = function(callback) {
   var options = {
     host: 'fellowshiptech.sifterapp.com',
     path: '/api/projects/5348/issues?s=1-2',

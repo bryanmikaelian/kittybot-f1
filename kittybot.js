@@ -5,15 +5,6 @@ var sifter = require('./sifter');
 var kitty = require('./kitty');
 var session = require('./session');
 var counts = require('./counts');
-
-if (process.env.REDISTOGO_URL) {
-  var rtg   = require("url").parse(process.env.REDISTOGO_URL);
-  var redis = require("redis"), redisdb = redis.createClient(rtg.port, rtg.hostname);
-  redisdb.auth(rtg.auth.split(":")[1]);
-} else {
-  var redis = require('redis'), redisdb = redis.createClient();
-}
-
 var roomNumber = 439862;
 var catNipOn = false;
 var sifterPollerOn = true;
@@ -83,7 +74,7 @@ var room = client.room(roomNumber, function(room) {
       });
     }
   }, 2000);
-  // Leet speak controller
+  // Leet speak module
   var speak = function(message){
     if(catNipOn){
         room.speak(lol.LOLTranslate(message));
@@ -97,7 +88,7 @@ var room = client.room(roomNumber, function(room) {
   if (sifterPollerOn) {
     console.log("Polling against the Sifter API is now enabled.");
     setInterval(function() {
-      sifter.pollAPI(redisdb, function(issue) {
+      sifter.pollAPI(function(issue) {
         console.log("Polling the Sifter API...");
         speak(issue['opener_name'] + " has opened the following sifter: Sifter #" + issue['number'] + ": " + issue['subject']);
       });
