@@ -142,7 +142,7 @@ setInterval(function() {
     path: "/"
   };
   console.log("Pinging kittybot.herokuapp.com");
-  https.get(options, function(res){
+  http.get(options, function(res){
     res.on('data', function (chunk) {
       console.log("Kittybot says: " res.statusCode);
     });
