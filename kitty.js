@@ -91,4 +91,11 @@ this.respond = function(room, command, redisdb, callback){
     }, 5000);
   }
 
+  // Rimshot count
+  if (command === "/rimshots") {
+    console.log("Someone requested the total rimshots");
+    redisdb.get("total_rimshots", function(err, value) {
+      callback("Meow. Total rimshots played: " + value);
+    });
+  }
 }

@@ -52,85 +52,64 @@ var room = client.room(roomNumber, function(room) {
     if (!room.isListening()) {
       console.log("Listening to the room " + room.name);
       room.listen(function(message){ 
-
-        // Session Module
-        if (message.type == "LeaveMessage") {
-          client.user(message.userId, function (user) { 
-            // When a user disconeccts. remove them from the redis set
-            console.log(user.name + " has disconnected.");
-            redisdb.srem("connected_users", user.name);
-          });
-        }
-
-        if (message.type == "EnterMessage") {
-          client.user(message.userId, function (user) { 
-            // When a user connects. add them from the redis set
-            console.log(user.name + " has connected.");
-            redisdb.sadd("connected_users", user.name);
-            speak("Meow. Hello " + user.name + ". Is it me you are looking for?"); 
-          });
-        }
-
-        // Nuke. WARNING THIS WILL REQUIRE A RESTART
-        if (message.body === "/nukekitty") {
-          client.user(message.userId, function(user) {
-            if (user.name === "Bryan Mikaelian") {
-              speak("NUCLEAR LAUNCH DETECTED. Kittybot destruction will now occur.");
-              speak("Meow?");
-              console.log("Kittybot has been marked for nuclear detonation in the room " + room.name);
-              setTimeout(function() {
-                room.leave();
-                room.stopListening();
-                clearInterval(listenInterval);
-                console.log("Kittybot is no longer with us.");
-                redisdb.srem("connected_users", "Kittybot");
-              }, 5000);
-            }
-            else {
-              speak("Not enough minerals.");
-            }
-          });
-        }
-
-        // General Commands module
-        kitty.respond(room, message.body, redisdb, function(response){
-          speak(response);
-        });
-
-        // Sifter API polling module
-        if (sifterPollerOn) {
-          console.log("Polling against the Sifter API is now enabled.");
-          setInterval(function() {
-            sifter.pollAPI(redisdb, function(issue) {
-              console.log("Polling the Sifter API...");
-              speak(issue['opener_name'] + " has opened the following sifter: Sifter #" + issue['number'] + ": " + issue['subject']);
-            });
-          }, 60000);
-        }
-        else {
-          console.log("Polling against the Sifter API is disabled.");
-        }
-
-        // SoundMessage counts module
-        if (message.type === "SoundMessage" && message.body == "rimshot") {
-          console.log("Someone played a rimshot");
-          // Update redis
-          redisdb.incr("total_rimshots");
-          redisdb.get("total_rimshots", function(err, value) {
-            console.log("Redis has been updated.  The value for total_rimshots is " + value);
-          })
-        }
-
-        // Rimshot count
-        if (message.body === "/rimshots") {
-          console.log("Someone requested the total rimshots");
-          redisdb.get("total_rimshots", function(err, value) {
-            speak("Meow. Total rimshots played: " + value);
-          });
-        }
-
         // Need to check to see if the message is not null since we are using .match
         if (message.body != null ) {
+
+          // Session
+          if (message.type == "LeaveMessage") {
+            client.user(message.userId, function (user) { 
+              // When a user disconeccts. remove them from the redis set
+              console.log(user.name + " has disconnected.");
+              redisdb.srem("connected_users", user.name);
+            });
+          }
+
+          if (message.type == "EnterMessage") {
+            client.user(message.userId, function (user) { 
+              // When a user connects. add them from the redis set
+              console.log(user.name + " has connected.");
+              redisdb.sadd("connected_users", user.name);
+              speak("Meow. Hello " + user.name + ". Is it me you are looking for?"); 
+            });
+          }
+
+          // Nuke. WARNING THIS WILL REQUIRE A RESTART
+          if (message.body === "/nukekitty") {
+            client.user(message.userId, function(user) {
+              if (user.name === "Bryan Mikaelian") {
+                speak("NUCLEAR LAUNCH DETECTED. Kittybot destruction will now occur.");
+                speak("Meow?");
+                console.log("Kittybot has been marked for nuclear detonation in the room " + room.name);
+                setTimeout(function() {
+                  room.leave();
+                  room.stopListening();
+                  clearInterval(listenInterval);
+                  console.log("Kittybot is no longer with us.");
+                  redisdb.srem("connected_users", "Kittybot");
+                }, 5000);
+              }
+              else {
+                speak("Not enough minerals.");
+              }
+            });
+          }
+
+          // General Commands module
+          kitty.respond(room, message.body, redisdb, function(response){
+            speak(response);
+          });
+
+          // SoundMessage counts module
+          if (message.type === "SoundMessage") {
+            if (message.body == "rimshot") {
+              console.log("Someone played a rimshot");
+              // Update redis
+              redisdb.incr("total_rimshots");
+              redisdb.get("total_rimshots", function(err, value) {
+                console.log("Rimshot count updated. The new value is " + value);
+              })
+            }
+          }
 
           // Sifters module
           if (message.body === "/sifters" || message.body === "/crs") {
@@ -155,12 +134,28 @@ var room = client.room(roomNumber, function(room) {
       });
     }
   }, 2000);
+  // Leet speak controller
   var speak = function(message){
     if(catNipOn){
         room.speak(lol.LOLTranslate(message));
     }
     else{
       room.speak(message);
-    }	
+    }
   }
+
+  // Sifter API polling module
+  if (sifterPollerOn) {
+    console.log("Polling against the Sifter API is now enabled.");
+    setInterval(function() {
+      sifter.pollAPI(redisdb, function(issue) {
+        console.log("Polling the Sifter API...");
+        speak(issue['opener_name'] + " has opened the following sifter: Sifter #" + issue['number'] + ": " + issue['subject']);
+      });
+    }, 60000);
+  }
+  else {
+    console.log("Polling against the Sifter API is disabled.");
+  }
+
 });
