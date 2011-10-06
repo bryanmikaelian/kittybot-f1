@@ -65,10 +65,7 @@ var room = client.room(roomNumber, function(room) {
           }
 
           // Sifters module
-          if (message.body === "/sifters" || message.body === "/crs") {
-            sifter.processCommand(room, message.body);
-          }
-          if (message.body.match(/\/sifter\s+(\d+)/) || message.body.match(/\/cr\s+(\d+)/)) {
+          if (message.body === "/sifters" || message.body === "/crs" || message.body.match(/\/sifter\s+(\d+)/) || message.body.match(/\/cr\s+(\d+)/)) {
             sifter.processCommand(room, message.body);
           }
 
