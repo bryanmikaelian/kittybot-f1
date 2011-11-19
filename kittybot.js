@@ -1,10 +1,10 @@
 var http = require('http');
-var client = require('ranger').createClient("fellowshiptech", "7bda324c83352c4839ee47e6ff842ed759aaf54b");
+var client = require('ranger').createClient("activefaith", "7bda324c83352c4839ee47e6ff842ed759aaf54b");
 var lol = require('./lib/LOLTranslate');
 var sifter = require('./lib/sifter');
 var kitty = require('./lib/kitty');
 var session = require('./lib/session');
-var roomNumber = 373588;
+var roomNumber = 439862;
 var catNipOn = false;
 var sifterPollerOn = true;
 
@@ -19,13 +19,9 @@ http.createServer(function(req, res) {
 
 var room = client.room(roomNumber, function(room) {
   // Begin session for this room
-  session.init(room);
-
-  // Start listening for messages. Check every 2 seconds to see if we are listening.
-  var listenInterval = setInterval(function() {
+  session.init(room, function() {
 
   });
-
 });
 
 
