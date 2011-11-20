@@ -1,4 +1,4 @@
-Kittybot v2.0
+Kittybot v2.0.1
 ======
 I am kittybot.  I do nice kitty things and help you out.
 
