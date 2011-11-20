@@ -1,12 +1,12 @@
 var http = require('http');
 var client = require('ranger').createClient("activefaith", "7bda324c83352c4839ee47e6ff842ed759aaf54b");
-var lol = require('./lib/LOLTranslate');
 var sifter = require('./lib/sifter');
 var kitty = require('./lib/kitty');
 var session = require('./lib/session');
-var roomNumber = 373588;
 var counts = require('./lib/counts');
-// var leet = require('./lib/leet');
+var catnip = require('./lib/catnip');
+
+var roomNumber = 439862;
 var sifterPollerOn = true;
 var catNipOn = false;
 
@@ -29,7 +29,7 @@ var room = client.room(roomNumber, function(room) {
     console.log("[Room " + room.name + "] Polling against the Sifter API is now enabled.");
     setInterval(function() { 
       sifter.pollAPI(function(issue) {
-        speak(room, issue);
+        catnip.speak(room, issue);
       });
     }, 60000);
   }
@@ -46,12 +46,13 @@ var room = client.room(roomNumber, function(room) {
         session.update(room, message.type, user);
       });
     }
+
     // If the message's userID is not null, that means someone said something.  If it is a command, process it.
     if (message.userId != null && message.body != null) {
 
       // General Commands module
       kitty.processCommand(room, message.body, function(response){
-        speak(room, response);
+        catnip.speak(room, response);
       });
 
       // SoundMessage counts module
@@ -62,27 +63,18 @@ var room = client.room(roomNumber, function(room) {
       // If someone requested all the sifters, process the command
       if (message.body === "/sifters") {
         sifter.getAll(room, message.body, function(issues) {
-          speak(room, issues);
+          catnip.speak(room, issues);
         });
       }
 
       // If someone requested a specific sifter, process the command
       if (message.body.match(/\/sifter\s+(\d+)/)) {
         sifter.getSpecific(room, message.body, function(issue) {
-          speak(room, issue);
+          catnip.speak(room, issue);
         });
       }
-
-      //  Catnip module
-      // if (message.body.match(/\/catnip\s+(on)/)) {
-      //   console.log("Kittybot is nommin some catnip");
-      //   leet.configureLeetSpeak(true);
-      // }
-      // if (message.body.match(/\/catnip\s+(off)/)) {
-      //   console.log("Kittybot has stopped nommin the catnip");
-      //   leet.configureLeetSpeak(false);
-      // }
     }
+
   });
 
   // Sync current users with session DB to keep the streaming API connection alive.  This happens every 10 minutes
@@ -90,15 +82,6 @@ var room = client.room(roomNumber, function(room) {
     session.sync(room);
   }, 600000);
 
-
-  this.speak = function(room, message){
-    if(catNipOn){
-        room.speak(lol.LOLTranslate(message));
-    }
-    else{
-      room.speak(message);
-    }
-  }
 });
 
 
