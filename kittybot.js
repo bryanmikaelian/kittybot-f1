@@ -46,7 +46,7 @@ var room = client.room(roomNumber, function(room) {
       });
     }
     // If the message's userID is not null, that means someone said something.  If it is a command, process it.
-    if (message.userId != null) {
+    if (message.userId != null && message.body != null) {
 
       // General Commands module
       kitty.processCommand(room, message.body, function(response){
