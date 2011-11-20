@@ -59,7 +59,7 @@ var room = client.room(roomNumber, function(room) {
         counts.update(message.body);
       }
 
-      /o If someone requested all the sifters, process the command
+      // If someone requested all the sifters, process the command
       if (message.body === "/sifters") {
         sifter.getAll(room, message.body, function(issues) {
           speak(room, issues);
