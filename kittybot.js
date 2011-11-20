@@ -21,6 +21,19 @@ var room = client.room(roomNumber, function(room) {
   // Begin session for this room
   session.init(room);
 
+  // Enable/Disable the Sifter Polling module
+  if (sifterPollerOn) {
+    console.log("[Room " + room.name + "] Polling against the Sifter API is now enabled.");
+    setInterval(function() { 
+      sifter.pollAPI(function(issue) {
+        speak(issue);
+      });
+    }, 60000);
+  }
+  else {
+    console.log("[Room " + room.name + "]" + "Polling against the Sifter API is disabled.");
+  }
+
   // Session has been established.  Start listening to the room
   room.listen(function(message) {
 
@@ -30,6 +43,22 @@ var room = client.room(roomNumber, function(room) {
         session.update(room, message.type, user);
       });
     }
+    // If the message's userID is not null, that means someone said something.  If it is a command, process it.
+    if (message.userId != null) {
+
+      // If someone requested all the sifters, process the command
+      if (message.body === "/sifters") {
+        sifter.getAll(room, message.body, function(issues) {
+          speak(issues);
+        });
+      }
+      // If someone requested a specific sifter, process the command
+      if (message.body.match(/\/sifter\s+(\d+)/)) {
+        sifter.getSpecific(room, message.body, function(issue) {
+          speak(issue);
+        });
+      }
+    }
   });
 
   // Sync current users with session DB to keep the streaming API connection alive.  This happens every 10 minutes
@@ -37,7 +66,18 @@ var room = client.room(roomNumber, function(room) {
     session.sync(room);
   }, 600000);
 
+  // Leet speak module
+  var speak = function(message){
+    if(catNipOn){
+        room.speak(lol.LOLTranslate(message));
+    }
+    else{
+      room.speak(message);
+    }
+  }
+
 });
+
 
 
 
