@@ -29,7 +29,7 @@ var room = client.room(roomNumber, function(room) {
     console.log("[Room " + room.name + "] Polling against the Sifter API is now enabled.");
     setInterval(function() { 
       sifter.pollAPI(function(issue) {
-        speak(issue);
+        speak(room, issue);
       });
     }, 60000);
   }
@@ -59,7 +59,7 @@ var room = client.room(roomNumber, function(room) {
         counts.update(message.body);
       }
 
-      // If someone requested all the sifters, process the command
+      /o If someone requested all the sifters, process the command
       if (message.body === "/sifters") {
         sifter.getAll(room, message.body, function(issues) {
           speak(room, issues);
