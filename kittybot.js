@@ -32,7 +32,7 @@ var room = client.room(roomNumber, function(room) {
     }
   });
 
-  // Sync session to keep the streaming API connection alive.  This happens every 10 minutes
+  // Sync current users with session DB to keep the streaming API connection alive.  This happens every 10 minutes
   setInterval(function() {
     session.sync(room);
   }, 600000);
