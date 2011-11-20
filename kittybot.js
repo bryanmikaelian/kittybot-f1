@@ -4,9 +4,11 @@ var lol = require('./lib/LOLTranslate');
 var sifter = require('./lib/sifter');
 var kitty = require('./lib/kitty');
 var session = require('./lib/session');
+var counts = require('./lib/counts');
+// var leet = require('./lib/leet');
 var roomNumber = 439862;
-var catNipOn = false;
 var sifterPollerOn = true;
+var catNipOn = false;
 
 console.log("Kittybot has been started");
 
@@ -46,18 +48,39 @@ var room = client.room(roomNumber, function(room) {
     // If the message's userID is not null, that means someone said something.  If it is a command, process it.
     if (message.userId != null) {
 
+      // General Commands module
+      kitty.processCommand(room, message.body, function(response){
+        speak(room, response);
+      });
+
+      // SoundMessage counts module
+      if (message.type === "SoundMessage") {
+        counts.update(message.body);
+      }
+
       // If someone requested all the sifters, process the command
       if (message.body === "/sifters") {
         sifter.getAll(room, message.body, function(issues) {
-          speak(issues);
+          speak(room, issues);
         });
       }
+
       // If someone requested a specific sifter, process the command
       if (message.body.match(/\/sifter\s+(\d+)/)) {
         sifter.getSpecific(room, message.body, function(issue) {
-          speak(issue);
+          speak(room, issue);
         });
       }
+
+      //  Catnip module
+      // if (message.body.match(/\/catnip\s+(on)/)) {
+      //   console.log("Kittybot is nommin some catnip");
+      //   leet.configureLeetSpeak(true);
+      // }
+      // if (message.body.match(/\/catnip\s+(off)/)) {
+      //   console.log("Kittybot has stopped nommin the catnip");
+      //   leet.configureLeetSpeak(false);
+      // }
     }
   });
 
@@ -66,15 +89,15 @@ var room = client.room(roomNumber, function(room) {
     session.sync(room);
   }, 600000);
 
-  // Leet speak module
-  var speak = function(message){
+
+  this.speak = function(room, message){
     if(catNipOn){
         room.speak(lol.LOLTranslate(message));
     }
     else{
       room.speak(message);
     }
-  }
+}
 
 });
 
