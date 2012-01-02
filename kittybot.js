@@ -7,7 +7,7 @@ var counts = require('./lib/counts');
 var catnip = require('./lib/catnip');
 
 var roomNumber = 373588;
-var sifterPollerOn = true;
+var sifterPollerOn = false;
 var catNipOn = false;
 
 console.log("Starting Kittybot...");
