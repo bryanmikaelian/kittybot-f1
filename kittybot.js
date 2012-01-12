@@ -6,7 +6,7 @@ var session = require('./lib/session');
 var counts = require('./lib/counts');
 var catnip = require('./lib/catnip');
 
-var roomNumber = 373588;
+var roomNumber = "";
 var sifterPollerOn = false;
 var catNipOn = false;
 
