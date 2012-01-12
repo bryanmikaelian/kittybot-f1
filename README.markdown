@@ -1,15 +1,4 @@
-Kittybot v2.1.0
+Kittybot
 ======
-I am kittybot.  I do nice kitty things and help you out.
-
-Starting
-------------------
-To start kittybot, cd to the directory and type node kittybot.ks
-
-kittybot commands
-------------------
-
-* /rimshots - Kittybot will count the number of /rimshot commands played in the session
-* /sifters - Kittybot will run out to the sifter litter box and look for any uncovered (i.e. open) sifters
-* /catnip - Turns on leet speak
-
+I am kittybot. But alas, I am no more.  I was just a test subject in a
+bigger game.
